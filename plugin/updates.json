@@ -1,0 +1,12 @@
+{
+  "addons": {
+    "zotero-organiser@sameggleton.dev": {
+      "updates": [
+        {
+          "version": "1.0.0",
+          "update_link": "https://github.com/sameggleton/zotero-organiser/releases/download/v1.0.0/zotero-organiser.xpi"
+        }
+      ]
+    }
+  }
+}
