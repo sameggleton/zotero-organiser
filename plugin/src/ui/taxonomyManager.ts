@@ -150,7 +150,7 @@ export class TaxonomyManagerUI {
     titleGroup.style.gap = '8px';
 
     const title = doc.createElement('span');
-    title.textContent = 'Taxonomy Organiser';
+    title.textContent = 'Organiser';
     title.style.fontSize = '12.5px';
     title.style.fontWeight = '600';
     title.style.color = 'var(--zo-text-primary, #0f172a)';

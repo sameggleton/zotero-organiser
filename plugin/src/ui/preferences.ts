@@ -21,7 +21,7 @@ export class PreferencesUI {
       Zotero.PreferencePanes.register({
         pluginID: 'zotero-organiser@sameggleton.dev',
         src,
-        label: 'Taxonomy Organiser',
+        label: 'Organiser',
         image,
         defaultXUL: true,
         stylesheets: [stylesheet, 'chrome://zoteroorganiser/content/preferences.css'],
