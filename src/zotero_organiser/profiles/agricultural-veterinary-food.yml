@@ -1,0 +1,191 @@
+schema_version: 1
+version: "1.0.0"
+
+description: >
+  Covers agriculture, agronomy, crop and animal production, forestry, fisheries, horticulture, food science and veterinary research.
+
+conventions:
+  separator: "/"
+  canonical_tag_format: "{namespace}/{value}"
+  allow_unlisted_values: false
+  prefer_precision_over_recall: true
+  avoid_metadata_duplication: true
+  metadata_fields_not_to_tag:
+    - author
+    - journal
+    - year
+    - doi
+    - publisher
+    - institution
+  notes:
+    - "Collections/folders organize projects; tags reflect intrinsic content."
+    - "Role describes contribution style (empirical, theoretical, review, method)."
+    - "Topic describes substantive domain questions, phenomena, or theories."
+    - "System describes the physical, biological, conceptual, or social entity investigated."
+    - "Method describes specific investigative techniques, protocols, or models."
+    - "Status and priority are human-managed workflow namespaces."
+
+classifier:
+  semantic_namespaces:
+    - role
+    - topic
+    - system
+    - method
+  workflow_namespaces:
+    - status
+  human_only_namespaces:
+    - priority
+  rules:
+    - "Never invent a tag not defined in this taxonomy."
+    - "Do not tag a concept merely because it is mentioned in passing."
+    - "Prefer the most specific applicable canonical tag without adding redundant synonyms."
+    - "Do not infer priority or reading status from document content."
+    - "Use aliases only for recognition and normalisation; always emit the canonical tag."
+
+relationships: []
+
+namespaces:
+
+  status:
+    description: "Reading and processing workflow state."
+    kind: workflow
+    classifier_eligible: false
+    max_tags: 1
+    mutually_exclusive: true
+    user_managed:
+      - reading
+      - read
+      - processed
+    values:
+      needs-triage:
+        description: "Item requires human review or candidate tags await confirmation."
+        aliases: ["triage", "needs review", "needs-review"]
+      to-read:
+        description: "Item has been queued into the reading list."
+        aliases: ["unread", "to read", "to_read"]
+      reading:
+        description: "Item is actively being read."
+      read:
+        description: "Item has been read and understood."
+        aliases: ["done"]
+      processed:
+        description: "Notes or knowledge have been extracted into broader research workflow."
+
+  priority:
+    description: "User judgement about importance or urgency to revisit."
+    kind: judgement
+    classifier_eligible: false
+    max_tags: 2
+    values:
+      core:
+        description: "Foundational reference essential to ongoing projects."
+        aliases: ["essential", "seminal", "must-read", "foundational"]
+      high:
+        description: "Highly relevant paper containing important results or techniques."
+        aliases: ["important", "key-reference"]
+      revisit:
+        description: "Contains specific derivations, tables, or parameters to revisit later."
+        aliases: ["bookmark", "check-later", "reference-back"]
+
+  role:
+    description: "Contribution style or epistemic purpose the work serves in the literature."
+    kind: semantic
+    classifier_eligible: true
+    max_tags: 2
+    values:
+      review:
+        description: "Synthesises an established body of literature rather than presenting only a single narrow result."
+        aliases: ["review article", "survey", "overview", "systematic review", "meta-analysis"]
+      empirical:
+        description: "Presents primary empirical data, field/laboratory observations, or experimental measurements."
+        aliases: ["experimental", "empirical study", "measurement", "observational study"]
+      theoretical:
+        description: "Develops formal analytical theory, mathematical derivations, or conceptual frameworks."
+        aliases: ["theory", "analytical model", "conceptual framework", "formal derivation"]
+      methodological:
+        description: "Introduces or evaluates a new algorithm, experimental protocol, measurement tool, or analytical workflow."
+        aliases: ["methodology", "algorithm development", "protocol", "new method"]
+      computational:
+        description: "Presents numerical simulations, scientific computing models, or computational software tools."
+        aliases: ["simulation", "in silico", "numerical study", "computational model"]
+      application:
+        description: "Applies established methodologies to investigate a specific domain target or practical case study."
+        aliases: ["case study", "applied study", "field application"]
+      commentary:
+        description: "Editorial, commentary, position paper, or perspective on field directions."
+        aliases: ["perspective", "editorial", "position paper", "opinion"]
+
+  topic:
+    description: "Substantive domain phenomena, research questions, theories, or mechanisms."
+    kind: semantic
+    classifier_eligible: true
+    max_tags: 4
+    values:
+      agronomy:
+        description: "Soil fertility, crop rotation, precision agriculture, irrigation management, and tillage systems."
+        aliases: ["soil management", "precision agriculture", "irrigation", "tillage", "fertilizer"]
+      crop-science:
+        description: "Plant breeding, crop genetics, yield optimization, drought resistance, and pest management."
+        aliases: ["crop breeding", "plant genetics", "yield", "drought resistance", "pest resistance"]
+      animal-science:
+        description: "Livestock genetics, animal nutrition, feed efficiency, reproduction, and welfare."
+        aliases: ["livestock", "animal nutrition", "feed efficiency", "animal breeding", "welfare"]
+      forestry:
+        description: "Silviculture, forest ecology, timber management, reforestation, and agroforestry."
+        aliases: ["silviculture", "forest management", "timber", "agroforestry", "reforestation"]
+      fisheries-aquaculture:
+        description: "Fish farming, marine harvesting, aquaculture nutrition, disease management, and stock assessment."
+        aliases: ["aquaculture", "fish farming", "fisheries", "stock assessment", "mariculture"]
+      horticulture:
+        description: "Fruit, vegetable, viticulture, floriculture, greenhouse cultivation, and postharvest quality."
+        aliases: ["viticulture", "greenhouse", "postharvest", "orchard", "floriculture"]
+      food-science:
+        description: "Food processing, food safety/microbiology, sensory analysis, food chemistry, and packaging."
+        aliases: ["food technology", "food safety", "sensory analysis", "food chemistry", "fermentation"]
+      veterinary-science:
+        description: "Veterinary clinical medicine, zoonoses, animal pathology, pharmacology, and veterinary surgery."
+        aliases: ["veterinary medicine", "zoonosis", "animal disease", "veterinary clinical", "one health"]
+
+  system:
+    description: "Physical, biological, social, or computational entity under primary study."
+    kind: semantic
+    classifier_eligible: true
+    max_tags: 3
+    values:
+      agricultural-crops:
+        description: "Cereal crops (wheat, rice, maize), legumes, oilseeds, fruits, and vegetables."
+        aliases: ["wheat", "rice", "maize", "soybean", "crop plant"]
+      livestock-animals:
+        description: "Cattle, sheep, swine, poultry, horses, and companion animals."
+        aliases: ["cattle", "sheep", "poultry", "pig", "livestock herd"]
+      aquatic-stocks:
+        description: "Salmon, shellfish, marine finfish, algae, and wild fisheries stocks."
+        aliases: ["salmon", "shellfish", "fish stock"]
+      food-matrices:
+        description: "Dairy products, processed meats, grains, beverages, and functional foods."
+        aliases: ["dairy", "beverage", "processed food", "emulsion"]
+      agricultural-ecosystems:
+        description: "Pastures, cropping soils, orchards, plantations, and farm watersheds."
+        aliases: ["pasture", "cropland", "farm soil", "orchard"]
+
+  method:
+    description: "Investigative, computational, analytical, or experimental techniques applied."
+    kind: semantic
+    classifier_eligible: true
+    max_tags: 3
+    values:
+      field-trials:
+        description: "Randomized block designs, multi-location trials, and crop yield testing."
+        aliases: ["field trial", "randomized block", "yield trial"]
+      sensory-and-food-assays:
+        description: "Texture profiling, rheology, HPLC nutritional analysis, and microbial plating."
+        aliases: ["rheology", "sensory panel", "food testing", "HPLC analysis"]
+      genomic-selection:
+        description: "Genome-wide association studies (GWAS), marker-assisted selection, and QTL mapping."
+        aliases: ["genomic selection", "GWAS", "QTL", "marker-assisted"]
+      veterinary-diagnostics:
+        description: "Necropsy, serological assays, PCR pathogen detection, and clinical examinations."
+        aliases: ["necropsy", "serology", "PCR diagnostic", "clinical vet exam"]
+      remote-sensing-agriculture:
+        description: "Drone multispectral imaging, NDVI vegetation index, and soil moisture probes."
+        aliases: ["NDVI", "drone imaging", "multispectral", "precision sensing"]

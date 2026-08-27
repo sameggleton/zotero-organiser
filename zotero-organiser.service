@@ -1,0 +1,16 @@
+[Unit]
+Description=Conservative Zotero tag organiser
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+# ExecStart is ~/.local/bin/zotero-organiser (uv tool or pipx layout).
+ExecStart=%h/.local/bin/zotero-organiser --config %h/.config/zotero-organiser/config.yml run
+Restart=on-failure
+RestartSec=30
+Environment=PYTHONUNBUFFERED=1
+EnvironmentFile=-%h/.config/zotero-organiser/environment
+
+[Install]
+WantedBy=default.target

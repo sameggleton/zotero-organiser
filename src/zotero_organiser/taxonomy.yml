@@ -1,0 +1,146 @@
+schema_version: 1
+version: "1.0.0"
+
+description: >
+  Small generic starter taxonomy for zotero-organiser. Copy it with
+  `zotero-organiser taxonomy init` and edit that user copy before enabling
+  writes. Namespaces answer distinct questions. The classifier may only emit
+  canonical values listed in classifier.semantic_namespaces and marked
+  classifier_eligible.
+
+conventions:
+  separator: "/"
+  canonical_tag_format: "{namespace}/{value}"
+  allow_unlisted_values: false
+  prefer_precision_over_recall: true
+  avoid_metadata_duplication: true
+  metadata_fields_not_to_tag:
+    - author
+    - journal
+    - year
+    - doi
+    - publisher
+    - institution
+  notes:
+    - "Collections/projects answer why the work is in the library; do not duplicate project names as tags."
+    - "Topics describe what the work is about; methods describe how it is done; roles describe why it is useful."
+    - "status and priority are human-owned; the classifier never emits them."
+
+classifier:
+  semantic_namespaces:
+    - role
+    - topic
+    - method
+  workflow_namespaces:
+    - status
+  human_only_namespaces:
+    - priority
+  rules:
+    - "Never invent a tag."
+    - "Do not tag a concept merely because it is mentioned."
+    - "Prefer the most specific applicable canonical tag without adding redundant near-synonyms."
+    - "Do not infer priority from document content."
+    - "Do not overwrite user-managed reading status."
+    - "Use aliases only for recognition/normalisation; always emit the canonical value."
+
+# Reviewed tag-pair semantics. These are audit metadata only for now: they do
+# not suppress, remap, or otherwise change automatic tagging.
+relationships: []
+
+namespaces:
+
+  status:
+    description: "Reading and processing workflow state."
+    kind: workflow
+    classifier_eligible: false
+    max_tags: 1
+    mutually_exclusive: true
+    user_managed:
+      - reading
+      - read
+      - processed
+    values:
+      needs-triage:
+        description: "Imported or changed item requires human review or classifier confidence was insufficient."
+        aliases: ["triage", "needs review", "needs-review"]
+      to-read:
+        description: "Item has been accepted into the reading queue but has not been started."
+        aliases: ["unread", "to read", "to_read"]
+      reading:
+        description: "Item is actively being read."
+      read:
+        description: "Item has been read sufficiently to understand its main contribution."
+        aliases: ["done"]
+      processed:
+        description: "Important information has been extracted into notes or the broader knowledge workflow."
+
+  priority:
+    description: "User judgement about importance or need to revisit."
+    kind: judgement
+    classifier_eligible: false
+    max_tags: 2
+    constraints:
+      mutually_exclusive_groups:
+        - [core, high]
+    values:
+      core:
+        description: "Central literature that should be consulted when writing or making decisions in the relevant research area."
+      high:
+        description: "Especially important literature, but not part of the small core set."
+      revisit:
+        description: "Contains material the user expects to return to even if the item is not otherwise high priority."
+
+  role:
+    description: "What role the work plays in the literature or why it is useful to return to."
+    kind: semantic
+    classifier_eligible: true
+    max_tags: 2
+    values:
+      review:
+        description: "Synthesises an existing body of literature rather than presenting only a narrow new result."
+        include: ["narrative review", "systematic review"]
+        exclude: ["brief background section in a primary work"]
+      theory:
+        description: "Develops or substantially extends theory or a conceptual framework."
+      method:
+        description: "Introduces or materially develops a method, protocol, or workflow."
+      dataset:
+        description: "Introduces or substantially curates a reusable dataset."
+      commentary:
+        description: "Commentary, correspondence, or a short critical response rather than a full primary study."
+
+  topic:
+    description: "What the work is substantively about. Replace these illustrative values with your research vocabulary."
+    kind: semantic
+    classifier_eligible: true
+    max_tags: 3
+    values:
+      history:
+        description: "Historical context, historiography, or the development of an idea over time is central."
+      policy:
+        description: "Public, institutional, or professional policy is a substantive subject."
+      ethics:
+        description: "Ethical analysis, research ethics, or professional ethics is central."
+      education:
+        description: "Teaching, learning, curriculum, or pedagogy is a substantive subject."
+      computation:
+        description: "Computation itself is a substantive subject rather than only a supporting tool."
+      experiment:
+        description: "Experimental design, measurement, or empirical observation is a substantive subject."
+
+  method:
+    description: "How the work is performed or analysed. Tag methods that are important to the conclusions."
+    kind: semantic
+    classifier_eligible: true
+    max_tags: 3
+    values:
+      qualitative:
+        description: "Qualitative analysis is a substantive method."
+      quantitative:
+        description: "Quantitative or statistical analysis is a substantive method."
+      experimental:
+        description: "Experimental measurement is a substantive method."
+      computational:
+        description: "Computation or simulation is a substantive method."
+      archival:
+        description: "Archival, documentary, or source-based research is a substantive method."

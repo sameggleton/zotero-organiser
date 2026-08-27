@@ -1,0 +1,131 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    name: pytest ${{ matrix.python-version }} / ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        python-version: ["3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v5
+      - uses: astral-sh/setup-uv@v7
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install
+        run: uv sync --extra dev --frozen
+      - name: Tests
+        run: uv run pytest
+
+  lint:
+    name: ruff and validate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: astral-sh/setup-uv@v7
+        with:
+          python-version: "3.13"
+          save-cache: false
+      - name: Install
+        run: uv sync --extra dev --frozen
+      - name: Ruff format
+        run: uv run ruff format --check src tests
+      - name: Ruff lint
+        run: uv run ruff check src tests
+      - name: Validate packaged default taxonomy
+        run: uv run zotero-organiser taxonomy validate
+      - name: Validate example taxonomy
+        run: uv run zotero-organiser --taxonomy examples/taxonomies/molecular-simulation.yml taxonomy validate
+      - name: Validate example configs
+        run: |
+          uv run python -c "
+          from pathlib import Path
+          from zotero_organiser.config import load_config
+          root = Path('.')
+          for name in ('config.example.yml', 'config.macos.example.yml', 'config.ubuntu.example.yml'):
+              load_config(root / name)
+              print(f'{name} valid')
+          "
+
+  package:
+    name: hatch build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: astral-sh/setup-uv@v7
+        with:
+          python-version: "3.13"
+          save-cache: false
+      - name: Fresh build
+        run: |
+          rm -rf dist
+          uv build
+      - name: Verify wheel and sdist contents
+        run: |
+          python3 -c "
+          import tarfile, zipfile
+          from pathlib import Path
+
+          wheels = list(Path('dist').glob('*.whl'))
+          sdists = list(Path('dist').glob('*.tar.gz'))
+          assert len(wheels) == 1, wheels
+          assert len(sdists) == 1, sdists
+
+          with zipfile.ZipFile(wheels[0]) as wheel:
+              names = set(wheel.namelist())
+          for module in (
+              'zotero_organiser/ranking.py',
+              'zotero_organiser/local_classifier.py',
+              'zotero_organiser/personalization.py',
+              'zotero_organiser/setup.py',
+              'zotero_organiser/test_assistant.py',
+              'zotero_organiser/taxonomy_audit.py',
+              'zotero_organiser/taxonomy.yml',
+          ):
+              assert any(name.endswith(module) for name in names), module
+          print('wheel ok', wheels[0].name)
+
+          with tarfile.open(sdists[0], 'r:gz') as sdist:
+              names = set(sdist.getnames())
+          for path in (
+              'LICENSE',
+              'scripts/setup',
+              'zotero-organiser.service',
+              'config.example.yml',
+              'config.macos.example.yml',
+              'config.ubuntu.example.yml',
+              'src/zotero_organiser/taxonomy.yml',
+              'examples/taxonomies/molecular-simulation.yml',
+          ):
+              assert any(name.endswith(path) for name in names), path
+          print('sdist ok', sdists[0].name)
+          "
+
+  plugin:
+    name: vitest and build (plugin)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Install dependencies
+        run: |
+          if [ -f plugin/package-lock.json ]; then
+            cd plugin && npm ci
+          else
+            cd plugin && npm install
+          fi
+      - name: Typecheck
+        run: cd plugin && npx tsc --noEmit
+      - name: Vitest test suite
+        run: cd plugin && npm test
+      - name: Package .xpi bundle
+        run: cd plugin && npm run package

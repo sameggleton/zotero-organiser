@@ -1,0 +1,194 @@
+schema_version: 1
+version: "1.0.0"
+
+description: >
+  Covers analytical, inorganic, organic, physical, theoretical, computational, medicinal and macromolecular chemistry.
+
+conventions:
+  separator: "/"
+  canonical_tag_format: "{namespace}/{value}"
+  allow_unlisted_values: false
+  prefer_precision_over_recall: true
+  avoid_metadata_duplication: true
+  metadata_fields_not_to_tag:
+    - author
+    - journal
+    - year
+    - doi
+    - publisher
+    - institution
+  notes:
+    - "Collections/folders organize projects; tags reflect intrinsic content."
+    - "Role describes contribution style (empirical, theoretical, review, method)."
+    - "Topic describes substantive domain questions, phenomena, or theories."
+    - "System describes the physical, biological, conceptual, or social entity investigated."
+    - "Method describes specific investigative techniques, protocols, or models."
+    - "Status and priority are human-managed workflow namespaces."
+
+classifier:
+  semantic_namespaces:
+    - role
+    - topic
+    - system
+    - method
+  workflow_namespaces:
+    - status
+  human_only_namespaces:
+    - priority
+  rules:
+    - "Never invent a tag not defined in this taxonomy."
+    - "Do not tag a concept merely because it is mentioned in passing."
+    - "Prefer the most specific applicable canonical tag without adding redundant synonyms."
+    - "Do not infer priority or reading status from document content."
+    - "Use aliases only for recognition and normalisation; always emit the canonical tag."
+
+relationships: []
+
+namespaces:
+
+  status:
+    description: "Reading and processing workflow state."
+    kind: workflow
+    classifier_eligible: false
+    max_tags: 1
+    mutually_exclusive: true
+    user_managed:
+      - reading
+      - read
+      - processed
+    values:
+      needs-triage:
+        description: "Item requires human review or candidate tags await confirmation."
+        aliases: ["triage", "needs review", "needs-review"]
+      to-read:
+        description: "Item has been queued into the reading list."
+        aliases: ["unread", "to read", "to_read"]
+      reading:
+        description: "Item is actively being read."
+      read:
+        description: "Item has been read and understood."
+        aliases: ["done"]
+      processed:
+        description: "Notes or knowledge have been extracted into broader research workflow."
+
+  priority:
+    description: "User judgement about importance or urgency to revisit."
+    kind: judgement
+    classifier_eligible: false
+    max_tags: 2
+    values:
+      core:
+        description: "Foundational reference essential to ongoing projects."
+        aliases: ["essential", "seminal", "must-read", "foundational"]
+      high:
+        description: "Highly relevant paper containing important results or techniques."
+        aliases: ["important", "key-reference"]
+      revisit:
+        description: "Contains specific derivations, tables, or parameters to revisit later."
+        aliases: ["bookmark", "check-later", "reference-back"]
+
+  role:
+    description: "Contribution style or epistemic purpose the work serves in the literature."
+    kind: semantic
+    classifier_eligible: true
+    max_tags: 2
+    values:
+      review:
+        description: "Synthesises an established body of literature rather than presenting only a single narrow result."
+        aliases: ["review article", "survey", "overview", "systematic review", "meta-analysis"]
+      empirical:
+        description: "Presents primary empirical data, field/laboratory observations, or experimental measurements."
+        aliases: ["experimental", "empirical study", "measurement", "observational study"]
+      theoretical:
+        description: "Develops formal analytical theory, mathematical derivations, or conceptual frameworks."
+        aliases: ["theory", "analytical model", "conceptual framework", "formal derivation"]
+      methodological:
+        description: "Introduces or evaluates a new algorithm, experimental protocol, measurement tool, or analytical workflow."
+        aliases: ["methodology", "algorithm development", "protocol", "new method"]
+      computational:
+        description: "Presents numerical simulations, scientific computing models, or computational software tools."
+        aliases: ["simulation", "in silico", "numerical study", "computational model"]
+      application:
+        description: "Applies established methodologies to investigate a specific domain target or practical case study."
+        aliases: ["case study", "applied study", "field application"]
+      commentary:
+        description: "Editorial, commentary, position paper, or perspective on field directions."
+        aliases: ["perspective", "editorial", "position paper", "opinion"]
+
+  topic:
+    description: "Substantive domain phenomena, research questions, theories, or mechanisms."
+    kind: semantic
+    classifier_eligible: true
+    max_tags: 4
+    values:
+      organic-chemistry:
+        description: "Total synthesis, reaction methodology, organocatalysis, stereochemistry, and retrosynthesis."
+        aliases: ["synthesis", "organocatalysis", "reaction mechanism", "stereochemistry", "retrosynthesis"]
+      inorganic-chemistry:
+        description: "Coordination complexes, organometallics, bioinorganic chemistry, solid-state chemistry, and f-elements."
+        aliases: ["coordination complex", "organometallic", "lanthanide", "transition metal", "MOF"]
+      physical-chemistry:
+        description: "Chemical thermodynamics, kinetics, reaction dynamics, spectroscopy, and solvation phenomena."
+        aliases: ["thermodynamics", "kinetics", "spectroscopy", "solvation", "photochemistry"]
+      analytical-chemistry:
+        description: "Mass spectrometry, chromatography, NMR spectroscopy, biosensors, and chemical metrology."
+        aliases: ["mass spec", "chromatography", "HPLC", "NMR", "biosensor", "sensor"]
+      computational-chemistry:
+        description: "Electronic structure (DFT), molecular dynamics (MD), force fields, and machine-learned potentials."
+        aliases: ["DFT", "molecular dynamics", "quantum chemistry", "ab initio", "force field"]
+      medicinal-chemistry:
+        description: "Structure-activity relationships (SAR), drug design, pharmacokinetics, and lead optimization."
+        aliases: ["SAR", "drug design", "pharmacophore", "lead optimization", "docking"]
+      polymer-chemistry:
+        description: "Polymer synthesis, macromolecular architectures, living polymerization, and block copolymers."
+        aliases: ["polymerization", "macromolecule", "block copolymer", "hydrogel"]
+      electrochemistry:
+        description: "Electrocatalysis, batteries, fuel cells, redox mechanisms, and electrochemical double layers."
+        aliases: ["battery", "electrocatalysis", "fuel cell", "redox", "cyclic voltammetry"]
+
+  system:
+    description: "Physical, biological, social, or computational entity under primary study."
+    kind: semantic
+    classifier_eligible: true
+    max_tags: 3
+    values:
+      molecular-compounds:
+        description: "Small organic molecules, ligands, catalysts, pharmaceuticals, and peptides."
+        aliases: ["small molecule", "ligand", "catalyst", "drug"]
+      coordination-complexes:
+        description: "Transition-metal complexes, lanthanide chelates, and metalloenzymes."
+        aliases: ["complex", "chelate", "metallocene"]
+      macromolecules-polymers:
+        description: "Synthetic polymers, biopolymers, dendrimers, and crosslinked hydrogels."
+        aliases: ["polymer", "dendrimer", "gel"]
+      electrochemical-cells:
+        description: "Battery electrodes, electrolyte solutions, interfaces, and electrochemical cells."
+        aliases: ["electrode", "electrolyte", "battery cell"]
+      surfaces-catalysts:
+        description: "Heterogeneous catalysts, nanoparticle surfaces, MOFs, and thin films."
+        aliases: ["heterogeneous catalyst", "MOF", "nanoparticle surface"]
+
+  method:
+    description: "Investigative, computational, analytical, or experimental techniques applied."
+    kind: semantic
+    classifier_eligible: true
+    max_tags: 3
+    values:
+      chemical-synthesis:
+        description: "Bench synthesis, purification (chromatography), crystallization, and reaction optimization."
+        aliases: ["synthesis", "purification", "column chromatography", "crystallization"]
+      spectroscopic-characterisation:
+        description: "NMR, IR, Raman, UV-Vis, EPR, and X-ray photoelectron spectroscopy (XPS)."
+        aliases: ["NMR", "IR", "Raman", "UV-Vis", "XPS", "spectroscopy"]
+      xray-crystallography:
+        description: "Single-crystal XRD, powder XRD, and structural refinement."
+        aliases: ["XRD", "crystallography", "single crystal"]
+      mass-spectrometry:
+        description: "ESI-MS, MALDI-TOF, LC-MS/MS, and high-resolution mass spectrometry."
+        aliases: ["LC-MS", "ESI-MS", "MALDI", "MS/MS"]
+      computational-modeling:
+        description: "DFT calculations, all-atom MD simulations, enhanced sampling, and QM/MM."
+        aliases: ["DFT", "MD simulation", "QM/MM", "metadynamics"]
+      electrochemical-measurement:
+        description: "Cyclic voltammetry, electrochemical impedance spectroscopy (EIS), and chronoamperometry."
+        aliases: ["cyclic voltammetry", "CV", "EIS", "galvanostatic"]

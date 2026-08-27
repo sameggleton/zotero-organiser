@@ -1,0 +1,188 @@
+schema_version: 1
+version: "1.0.0"
+
+description: >
+  Covers ecosystems, biodiversity, pollution, conservation, environmental management, climate impacts, soils and sustainability.
+
+conventions:
+  separator: "/"
+  canonical_tag_format: "{namespace}/{value}"
+  allow_unlisted_values: false
+  prefer_precision_over_recall: true
+  avoid_metadata_duplication: true
+  metadata_fields_not_to_tag:
+    - author
+    - journal
+    - year
+    - doi
+    - publisher
+    - institution
+  notes:
+    - "Collections/folders organize projects; tags reflect intrinsic content."
+    - "Role describes contribution style (empirical, theoretical, review, method)."
+    - "Topic describes substantive domain questions, phenomena, or theories."
+    - "System describes the physical, biological, conceptual, or social entity investigated."
+    - "Method describes specific investigative techniques, protocols, or models."
+    - "Status and priority are human-managed workflow namespaces."
+
+classifier:
+  semantic_namespaces:
+    - role
+    - topic
+    - system
+    - method
+  workflow_namespaces:
+    - status
+  human_only_namespaces:
+    - priority
+  rules:
+    - "Never invent a tag not defined in this taxonomy."
+    - "Do not tag a concept merely because it is mentioned in passing."
+    - "Prefer the most specific applicable canonical tag without adding redundant synonyms."
+    - "Do not infer priority or reading status from document content."
+    - "Use aliases only for recognition and normalisation; always emit the canonical tag."
+
+relationships: []
+
+namespaces:
+
+  status:
+    description: "Reading and processing workflow state."
+    kind: workflow
+    classifier_eligible: false
+    max_tags: 1
+    mutually_exclusive: true
+    user_managed:
+      - reading
+      - read
+      - processed
+    values:
+      needs-triage:
+        description: "Item requires human review or candidate tags await confirmation."
+        aliases: ["triage", "needs review", "needs-review"]
+      to-read:
+        description: "Item has been queued into the reading list."
+        aliases: ["unread", "to read", "to_read"]
+      reading:
+        description: "Item is actively being read."
+      read:
+        description: "Item has been read and understood."
+        aliases: ["done"]
+      processed:
+        description: "Notes or knowledge have been extracted into broader research workflow."
+
+  priority:
+    description: "User judgement about importance or urgency to revisit."
+    kind: judgement
+    classifier_eligible: false
+    max_tags: 2
+    values:
+      core:
+        description: "Foundational reference essential to ongoing projects."
+        aliases: ["essential", "seminal", "must-read", "foundational"]
+      high:
+        description: "Highly relevant paper containing important results or techniques."
+        aliases: ["important", "key-reference"]
+      revisit:
+        description: "Contains specific derivations, tables, or parameters to revisit later."
+        aliases: ["bookmark", "check-later", "reference-back"]
+
+  role:
+    description: "Contribution style or epistemic purpose the work serves in the literature."
+    kind: semantic
+    classifier_eligible: true
+    max_tags: 2
+    values:
+      review:
+        description: "Synthesises an established body of literature rather than presenting only a single narrow result."
+        aliases: ["review article", "survey", "overview", "systematic review", "meta-analysis"]
+      empirical:
+        description: "Presents primary empirical data, field/laboratory observations, or experimental measurements."
+        aliases: ["experimental", "empirical study", "measurement", "observational study"]
+      theoretical:
+        description: "Develops formal analytical theory, mathematical derivations, or conceptual frameworks."
+        aliases: ["theory", "analytical model", "conceptual framework", "formal derivation"]
+      methodological:
+        description: "Introduces or evaluates a new algorithm, experimental protocol, measurement tool, or analytical workflow."
+        aliases: ["methodology", "algorithm development", "protocol", "new method"]
+      computational:
+        description: "Presents numerical simulations, scientific computing models, or computational software tools."
+        aliases: ["simulation", "in silico", "numerical study", "computational model"]
+      application:
+        description: "Applies established methodologies to investigate a specific domain target or practical case study."
+        aliases: ["case study", "applied study", "field application"]
+      commentary:
+        description: "Editorial, commentary, position paper, or perspective on field directions."
+        aliases: ["perspective", "editorial", "position paper", "opinion"]
+
+  topic:
+    description: "Substantive domain phenomena, research questions, theories, or mechanisms."
+    kind: semantic
+    classifier_eligible: true
+    max_tags: 4
+    values:
+      ecology:
+        description: "Community ecology, food webs, trophic interactions, ecosystem metabolism, and landscape ecology."
+        aliases: ["community ecology", "food web", "trophic", "ecosystem ecology", "landscape ecology"]
+      conservation:
+        description: "Protected area management, endangered species recovery, habitat restoration, and rewilding."
+        aliases: ["habitat restoration", "protected area", "species recovery", "rewilding", "conservation biology"]
+      biodiversity:
+        description: "Species richness, phylogenetic diversity, functional traits, and extinction risk analysis."
+        aliases: ["species richness", "extinction risk", "functional diversity", "IUCN"]
+      pollution:
+        description: "Air quality, water contamination, microplastics, ecotoxicology, and heavy metal remediation."
+        aliases: ["ecotoxicology", "microplastics", "contaminants", "remediation", "heavy metals", "water pollution"]
+      environmental-management:
+        description: "Environmental impact assessment (EIA), natural resource governance, and adaptive management."
+        aliases: ["EIA", "resource governance", "adaptive management", "environmental policy"]
+      climate-adaptation:
+        description: "Vulnerability assessment, climate resilience, nature-based solutions, and disaster mitigation."
+        aliases: ["climate resilience", "nature-based solutions", "adaptation", "vulnerability"]
+      soil-science:
+        description: "Soil carbon sequestration, soil microbiome, erosion control, and pedology."
+        aliases: ["soil carbon", "soil microbiome", "pedology", "soil erosion", "soil health"]
+      sustainability:
+        description: "Circular economy, life cycle assessment (LCA), sustainable development goals (SDGs), and resource efficiency."
+        aliases: ["circular economy", "LCA", "life cycle assessment", "SDGs", "sustainability metrics"]
+
+  system:
+    description: "Physical, biological, social, or computational entity under primary study."
+    kind: semantic
+    classifier_eligible: true
+    max_tags: 3
+    values:
+      terrestrial-ecosystems:
+        description: "Tropical forests, temperate woodlands, grasslands, savannas, and arid ecosystems."
+        aliases: ["forest", "grassland", "savanna", "wetland"]
+      aquatic-ecosystems:
+        description: "Rivers, freshwater lakes, coastal wetlands, mangroves, and coral reefs."
+        aliases: ["mangrove", "coral reef", "freshwater lake", "river ecosystem"]
+      anthropogenic-environments:
+        description: "Agricultural landscapes, urban green spaces, mining sites, and industrial zones."
+        aliases: ["urban ecosystem", "mine site", "agricultural landscape"]
+      social-ecological-systems:
+        description: "Coupled human-environment systems, governance regimes, and resource common pools."
+        aliases: ["social-ecological system", "common pool resource"]
+
+  method:
+    description: "Investigative, computational, analytical, or experimental techniques applied."
+    kind: semantic
+    classifier_eligible: true
+    max_tags: 3
+    values:
+      ecological-field-survey:
+        description: "Transect sampling, camera traps, environmental DNA (eDNA), and acoustic monitoring."
+        aliases: ["eDNA", "camera trap", "transect", "acoustic monitoring", "quadrat"]
+      life-cycle-assessment:
+        description: "ISO-standard LCA modeling, carbon footprinting, and cradle-to-grave analysis."
+        aliases: ["LCA", "carbon footprint", "cradle-to-grave", "material flow"]
+      ecotoxicological-bioassays:
+        description: "Toxicity testing, bioaccumulation assays, and chemical pollutant screening."
+        aliases: ["bioassay", "toxicity test", "bioaccumulation", "LC50"]
+      spatial-gis-modeling:
+        description: "Species distribution modeling (MaxEnt), GIS mapping, and habitat fragmentation metrics."
+        aliases: ["MaxEnt", "species distribution model", "GIS", "spatial analysis"]
+      ecosystem-carbon-accounting:
+        description: "Eddy covariance towers, soil core carbon analysis, and biomass allometry."
+        aliases: ["eddy covariance", "carbon stock", "biomass estimation"]

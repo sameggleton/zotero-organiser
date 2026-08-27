@@ -1,0 +1,191 @@
+schema_version: 1
+version: "1.0.0"
+
+description: >
+  Covers biological mechanisms of human disease and clinical research including neuroscience, immunology, oncology, pharmacology, pathology, metabolism and medical biotechnology.
+
+conventions:
+  separator: "/"
+  canonical_tag_format: "{namespace}/{value}"
+  allow_unlisted_values: false
+  prefer_precision_over_recall: true
+  avoid_metadata_duplication: true
+  metadata_fields_not_to_tag:
+    - author
+    - journal
+    - year
+    - doi
+    - publisher
+    - institution
+  notes:
+    - "Collections/folders organize projects; tags reflect intrinsic content."
+    - "Role describes contribution style (empirical, theoretical, review, method)."
+    - "Topic describes substantive domain questions, phenomena, or theories."
+    - "System describes the physical, biological, conceptual, or social entity investigated."
+    - "Method describes specific investigative techniques, protocols, or models."
+    - "Status and priority are human-managed workflow namespaces."
+
+classifier:
+  semantic_namespaces:
+    - role
+    - topic
+    - system
+    - method
+  workflow_namespaces:
+    - status
+  human_only_namespaces:
+    - priority
+  rules:
+    - "Never invent a tag not defined in this taxonomy."
+    - "Do not tag a concept merely because it is mentioned in passing."
+    - "Prefer the most specific applicable canonical tag without adding redundant synonyms."
+    - "Do not infer priority or reading status from document content."
+    - "Use aliases only for recognition and normalisation; always emit the canonical tag."
+
+relationships: []
+
+namespaces:
+
+  status:
+    description: "Reading and processing workflow state."
+    kind: workflow
+    classifier_eligible: false
+    max_tags: 1
+    mutually_exclusive: true
+    user_managed:
+      - reading
+      - read
+      - processed
+    values:
+      needs-triage:
+        description: "Item requires human review or candidate tags await confirmation."
+        aliases: ["triage", "needs review", "needs-review"]
+      to-read:
+        description: "Item has been queued into the reading list."
+        aliases: ["unread", "to read", "to_read"]
+      reading:
+        description: "Item is actively being read."
+      read:
+        description: "Item has been read and understood."
+        aliases: ["done"]
+      processed:
+        description: "Notes or knowledge have been extracted into broader research workflow."
+
+  priority:
+    description: "User judgement about importance or urgency to revisit."
+    kind: judgement
+    classifier_eligible: false
+    max_tags: 2
+    values:
+      core:
+        description: "Foundational reference essential to ongoing projects."
+        aliases: ["essential", "seminal", "must-read", "foundational"]
+      high:
+        description: "Highly relevant paper containing important results or techniques."
+        aliases: ["important", "key-reference"]
+      revisit:
+        description: "Contains specific derivations, tables, or parameters to revisit later."
+        aliases: ["bookmark", "check-later", "reference-back"]
+
+  role:
+    description: "Contribution style or epistemic purpose the work serves in the literature."
+    kind: semantic
+    classifier_eligible: true
+    max_tags: 2
+    values:
+      review:
+        description: "Synthesises an established body of literature rather than presenting only a single narrow result."
+        aliases: ["review article", "survey", "overview", "systematic review", "meta-analysis"]
+      empirical:
+        description: "Presents primary empirical data, field/laboratory observations, or experimental measurements."
+        aliases: ["experimental", "empirical study", "measurement", "observational study"]
+      theoretical:
+        description: "Develops formal analytical theory, mathematical derivations, or conceptual frameworks."
+        aliases: ["theory", "analytical model", "conceptual framework", "formal derivation"]
+      methodological:
+        description: "Introduces or evaluates a new algorithm, experimental protocol, measurement tool, or analytical workflow."
+        aliases: ["methodology", "algorithm development", "protocol", "new method"]
+      computational:
+        description: "Presents numerical simulations, scientific computing models, or computational software tools."
+        aliases: ["simulation", "in silico", "numerical study", "computational model"]
+      application:
+        description: "Applies established methodologies to investigate a specific domain target or practical case study."
+        aliases: ["case study", "applied study", "field application"]
+      commentary:
+        description: "Editorial, commentary, position paper, or perspective on field directions."
+        aliases: ["perspective", "editorial", "position paper", "opinion"]
+
+  topic:
+    description: "Substantive domain phenomena, research questions, theories, or mechanisms."
+    kind: semantic
+    classifier_eligible: true
+    max_tags: 4
+    values:
+      neuroscience:
+        description: "Neurodegeneration, synaptic plasticity, neural circuits, neuroinflammation, and brain disorders."
+        aliases: ["alzheimer", "parkinson", "synaptic plasticity", "neurodegeneration", "neural circuit"]
+      immunology:
+        description: "Innate/adaptive immunity, T-cell biology, auto-immunity, cytokines, and immunotherapy."
+        aliases: ["T cell", "cytokine", "autoimmunity", "immunotherapy", "antibody", "innate immunity"]
+      cancer:
+        description: "Oncogenesis, tumor microenvironment, metastasis, cancer genetics, and targeted oncology therapies."
+        aliases: ["oncology", "tumor", "metastasis", "carcinoma", "chemotherapy", "car-t"]
+      pharmacology:
+        description: "Pharmacodynamics, pharmacokinetics (ADME), drug delivery systems, and toxicology."
+        aliases: ["pharmacokinetics", "ADME", "drug delivery", "toxicology", "pharmacodynamics"]
+      pathology:
+        description: "Histopathology, molecular diagnostics, tissue pathogenesis, and biomarker identification."
+        aliases: ["histopathology", "biomarker", "pathogenesis", "molecular diagnostic"]
+      metabolism:
+        description: "Diabetes, lipid metabolism, mitochondrial dysfunction, metabolic syndrome, and bioenergetics."
+        aliases: ["diabetes", "mitochondria", "lipid metabolism", "metabolic syndrome", "insulin"]
+      infectious-disease:
+        description: "Viral/bacterial pathogenesis, antimicrobial resistance (AMR), vaccines, and host defense."
+        aliases: ["AMR", "vaccine", "antimicrobial resistance", "viral infection", "pathogen"]
+      medical-biotechnology:
+        description: "Gene therapy, monoclonal antibodies, regenerative medicine, and biosensing."
+        aliases: ["gene therapy", "monoclonal antibody", "regenerative medicine", "cell therapy"]
+      cardiovascular-medicine:
+        description: "Atherosclerosis, heart failure, vascular biology, arrhythmia, and thrombosis."
+        aliases: ["cardiovascular", "atherosclerosis", "heart failure", "thrombosis", "vascular"]
+
+  system:
+    description: "Physical, biological, social, or computational entity under primary study."
+    kind: semantic
+    classifier_eligible: true
+    max_tags: 3
+    values:
+      human-cohorts:
+        description: "Clinical trial participants, patient cohorts, healthy controls, and tissue biobanks."
+        aliases: ["clinical cohort", "patient cohort", "biobank", "clinical trial"]
+      animal-disease-models:
+        description: "Transgenic mice, xenografts (PDX), primate models, and disease-specific mutants."
+        aliases: ["PDX", "transgenic mouse", "disease model", "xenograft"]
+      cell-and-tissue-models:
+        description: "Patient-derived organoids, iPSCs, primary human cells, and organ-on-a-chip devices."
+        aliases: ["organoid", "iPSC", "organ-on-a-chip", "primary culture"]
+      biological-pathways:
+        description: "Signaling cascades, immune checkpoints, metabolic pathways, and gene networks."
+        aliases: ["immune checkpoint", "signaling cascade", "metabolic pathway"]
+
+  method:
+    description: "Investigative, computational, analytical, or experimental techniques applied."
+    kind: semantic
+    classifier_eligible: true
+    max_tags: 3
+    values:
+      clinical-trials:
+        description: "Phase I-IV randomized controlled trials (RCT), blinding, and survival endpoints."
+        aliases: ["RCT", "phase III", "randomized trial", "placebo-controlled"]
+      flow-cytometry:
+        description: "FACS analysis, multi-color immunophenotyping, and CyTOF mass cytometry."
+        aliases: ["FACS", "flow cytometry", "CyTOF", "immunophenotyping"]
+      histopathology-imaging:
+        description: "Immunohistochemistry (IHC), spatial transcriptomics, and MRI/PET imaging."
+        aliases: ["IHC", "spatial transcriptomics", "MRI", "PET scan", "histology"]
+      pharmacokinetic-modeling:
+        description: "Compartmental PK/PD modeling, non-compartmental analysis, and dose-response curve fitting."
+        aliases: ["PK/PD", "dose response", "clearance modeling"]
+      biomarker-discovery:
+        description: "Liquid biopsy, targeted metabolomics, RNA sequencing, and diagnostic assay validation."
+        aliases: ["liquid biopsy", "metabolomics", "biomarker validation"]

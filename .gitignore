@@ -1,0 +1,37 @@
+# OS / editor / agent local
+.DS_Store
+.serena/
+.grok/
+zotero-organiser.md
+node_modules/
+plugin/node_modules/
+build/
+plugin/build/
+dist/
+plugin/dist/
+
+# Python
+.venv
+__pycache__/
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.coverage*
+htmlcov/
+
+# Runtime secrets and local state — never commit
+/config.yml
+/environment
+.env
+.env.*
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm
+*.db-wal
+*.db-shm
+
+# Internal working copy; not a product artifact
+/REVIEW.md
+
+# Packaging output from legacy scripts
+/zotero-taxonomy-organiser.xpi

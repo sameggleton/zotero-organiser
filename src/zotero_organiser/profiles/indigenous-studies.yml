@@ -1,0 +1,188 @@
+schema_version: 1
+version: "1.0.0"
+
+description: >
+  Covers research concerning Indigenous peoples, cultures, languages, knowledges, methodologies, health, education, environments and communities globally.
+
+conventions:
+  separator: "/"
+  canonical_tag_format: "{namespace}/{value}"
+  allow_unlisted_values: false
+  prefer_precision_over_recall: true
+  avoid_metadata_duplication: true
+  metadata_fields_not_to_tag:
+    - author
+    - journal
+    - year
+    - doi
+    - publisher
+    - institution
+  notes:
+    - "Collections/folders organize projects; tags reflect intrinsic content."
+    - "Role describes contribution style (empirical, theoretical, review, method)."
+    - "Topic describes substantive domain questions, phenomena, or theories."
+    - "System describes the physical, biological, conceptual, or social entity investigated."
+    - "Method describes specific investigative techniques, protocols, or models."
+    - "Status and priority are human-managed workflow namespaces."
+
+classifier:
+  semantic_namespaces:
+    - role
+    - topic
+    - system
+    - method
+  workflow_namespaces:
+    - status
+  human_only_namespaces:
+    - priority
+  rules:
+    - "Never invent a tag not defined in this taxonomy."
+    - "Do not tag a concept merely because it is mentioned in passing."
+    - "Prefer the most specific applicable canonical tag without adding redundant synonyms."
+    - "Do not infer priority or reading status from document content."
+    - "Use aliases only for recognition and normalisation; always emit the canonical tag."
+
+relationships: []
+
+namespaces:
+
+  status:
+    description: "Reading and processing workflow state."
+    kind: workflow
+    classifier_eligible: false
+    max_tags: 1
+    mutually_exclusive: true
+    user_managed:
+      - reading
+      - read
+      - processed
+    values:
+      needs-triage:
+        description: "Item requires human review or candidate tags await confirmation."
+        aliases: ["triage", "needs review", "needs-review"]
+      to-read:
+        description: "Item has been queued into the reading list."
+        aliases: ["unread", "to read", "to_read"]
+      reading:
+        description: "Item is actively being read."
+      read:
+        description: "Item has been read and understood."
+        aliases: ["done"]
+      processed:
+        description: "Notes or knowledge have been extracted into broader research workflow."
+
+  priority:
+    description: "User judgement about importance or urgency to revisit."
+    kind: judgement
+    classifier_eligible: false
+    max_tags: 2
+    values:
+      core:
+        description: "Foundational reference essential to ongoing projects."
+        aliases: ["essential", "seminal", "must-read", "foundational"]
+      high:
+        description: "Highly relevant paper containing important results or techniques."
+        aliases: ["important", "key-reference"]
+      revisit:
+        description: "Contains specific derivations, tables, or parameters to revisit later."
+        aliases: ["bookmark", "check-later", "reference-back"]
+
+  role:
+    description: "Contribution style or epistemic purpose the work serves in the literature."
+    kind: semantic
+    classifier_eligible: true
+    max_tags: 2
+    values:
+      review:
+        description: "Synthesises an established body of literature rather than presenting only a single narrow result."
+        aliases: ["review article", "survey", "overview", "systematic review", "meta-analysis"]
+      empirical:
+        description: "Presents primary empirical data, field/laboratory observations, or experimental measurements."
+        aliases: ["experimental", "empirical study", "measurement", "observational study"]
+      theoretical:
+        description: "Develops formal analytical theory, mathematical derivations, or conceptual frameworks."
+        aliases: ["theory", "analytical model", "conceptual framework", "formal derivation"]
+      methodological:
+        description: "Introduces or evaluates a new algorithm, experimental protocol, measurement tool, or analytical workflow."
+        aliases: ["methodology", "algorithm development", "protocol", "new method"]
+      computational:
+        description: "Presents numerical simulations, scientific computing models, or computational software tools."
+        aliases: ["simulation", "in silico", "numerical study", "computational model"]
+      application:
+        description: "Applies established methodologies to investigate a specific domain target or practical case study."
+        aliases: ["case study", "applied study", "field application"]
+      commentary:
+        description: "Editorial, commentary, position paper, or perspective on field directions."
+        aliases: ["perspective", "editorial", "position paper", "opinion"]
+
+  topic:
+    description: "Substantive domain phenomena, research questions, theories, or mechanisms."
+    kind: semantic
+    classifier_eligible: true
+    max_tags: 4
+    values:
+      indigenous-knowledge:
+        description: "Traditional ecological knowledge (TEK), cultural heritage, oral traditions, and epistemologies."
+        aliases: ["traditional ecological knowledge", "TEK", "indigenous epistemology", "customary knowledge", "songlines"]
+      indigenous-methodologies:
+        description: "Decolonial research paradigms, Indigenous research sovereignty, reciprocity, and ethical protocols."
+        aliases: ["decolonial methodology", "indigenous research protocols", "relational accountability", "yarning"]
+      indigenous-health:
+        description: "Culturally safe healthcare, holistic health models, social determinants of Indigenous wellbeing."
+        aliases: ["cultural safety", "indigenous wellbeing", "closing the gap", "holistic health"]
+      indigenous-education:
+        description: "Two-way education, Indigenous pedagogical frameworks, language immersion, and community schooling."
+        aliases: ["two-way learning", "bilingual education", "indigenous pedagogy", "cultural immersion"]
+      indigenous-governance:
+        description: "Native title, self-determination, treaty making, customary law, and community leadership."
+        aliases: ["native title", "self-determination", "treaty", "customary law", "indigenous sovereignty"]
+      indigenous-language:
+        description: "Indigenous language documentation, linguistic revitalization, mother-tongue preservation, and dictionaries."
+        aliases: ["language revitalization", "indigenous linguistics", "endangered languages", "mother tongue"]
+      decolonial-research:
+        description: "Decolonizing institutions, anti-colonial critique, archival repatriation, and land back movements."
+        aliases: ["decolonization", "anticolonial", "repatriation", "land back", "decolonial theory"]
+      land-and-sea-management:
+        description: "Caring for Country, cultural burning/fire management, ranger programs, and customary tenure."
+        aliases: ["caring for country", "cultural burning", "indigenous ranger", "sea country", "customary tenure"]
+
+  system:
+    description: "Physical, biological, social, or computational entity under primary study."
+    kind: semantic
+    classifier_eligible: true
+    max_tags: 3
+    values:
+      indigenous-communities:
+        description: "First Nations communities, tribal councils, land councils, and urban Indigenous collectives."
+        aliases: ["first nations", "tribal council", "land council", "indigenous community"]
+      country-and-ancestral-lands:
+        description: "Traditional lands, sea country, sacred sites, and cultural landscapes."
+        aliases: ["country", "ancestral land", "sea country", "sacred site"]
+      cultural-expressions:
+        description: "Ceremonial practices, songlines, Indigenous art traditions, and material heritage."
+        aliases: ["songlines", "ceremony", "indigenous art", "cultural practice"]
+      indigenous-organizations:
+        description: "Aboriginal community-controlled health organizations (ACCHOs), native title bodies, and treaty commissions."
+        aliases: ["ACCHO", "native title body", "treaty commission", "indigenous organization"]
+
+  method:
+    description: "Investigative, computational, analytical, or experimental techniques applied."
+    kind: semantic
+    classifier_eligible: true
+    max_tags: 3
+    values:
+      yarning-and-oral-storywork:
+        description: "Yarning methodologies, oral history circles, and narrative storywork with Elders."
+        aliases: ["yarning", "storywork", "dadirri", "oral history indigenous"]
+      community-led-participatory-research:
+        description: "Co-designed research, community consent protocols (OACAP/FPIC), and benefit-sharing frameworks."
+        aliases: ["FPIC", "community-led", "participatory research", "OACAP", "co-design"]
+      linguistic-language-documentation:
+        description: "Phonetic recording of Elders, orthography development, and participatory dictionary making."
+        aliases: ["language documentation", "audio recording elders", "dictionary compiling"]
+      cultural-mapping-and-gis:
+        description: "Indigenous spatial mapping, sacred site recording, and country monitoring."
+        aliases: ["cultural mapping", "indigenous GIS", "country monitoring"]
+      decolonial-policy-critique:
+        description: "Structural critique of government policy, legislative analysis, and self-determination benchmarking."
+        aliases: ["policy critique", "self-determination assessment", "rights-based analysis"]

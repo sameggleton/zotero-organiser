@@ -1,0 +1,63 @@
+zotero:
+  # Zotero desktop Local API; enable it in Zotero Settings → Advanced.
+  mode: local
+  base_url: http://127.0.0.1:23119/api
+  app_name: zotero-organiser
+attachments:
+  path: ~/Zotero/storage
+backup:
+  source: ~/Zotero/storage
+  repository: ~/.local/share/zotero-organiser/restic
+  prewrite_dir: ~/.local/share/zotero-organiser/prewrite
+state:
+  database: ~/.local/state/zotero-organiser/state.sqlite
+classification:
+  # Remote OpenAI-compatible API. Leave disabled unless you opt in.
+  enabled: false
+  provider: openai_compatible
+  endpoint: https://api.openai.com/v1/chat/completions
+  api_key_env: OPENAI_API_KEY
+  model: gpt-4.1-mini
+  auto_accept_threshold: 0.92
+  triage_threshold: 0.70
+# Setup and `taxonomy init` write this file. Edit it, not the packaged seed.
+# taxonomy:
+#   path: ~/.config/zotero-organiser/taxonomy.yml
+ranking:
+  # Local candidate retrieval. Setup downloads weights before first classify.
+  enabled: true
+  mode: shortlist
+  backend: fastembed-cpu
+  model: BAAI/bge-small-en-v1.5
+  cache_dir: ~/.cache/zotero-organiser/ranker
+  dense_top_k: 24
+  lexical_top_k: 12
+  per_namespace_k: 3
+local_classifier:
+  # Local NLI reranker. Primary classifier for new installs.
+  enabled: true
+  mode: primary
+  backend: transformers-nli
+  model: tasksource/ModernBERT-base-nli
+  device: auto
+  batch_size: 8
+  fallback_to_remote: false
+personalization:
+  # Builds a local profile from pre-existing Zotero tags. Start in shadow mode:
+  # it logs preference signals but does not alter classifier candidates.
+  enabled: false
+  mode: shadow
+  min_examples: 3
+  weight: 0.12
+safety:
+  # Start read-only. Enable only after the sandbox checklist in README.md passes.
+  write_enabled: false
+  require_backup: true
+  only_new_items: true
+  allow_tag_removal: false
+  max_items_per_cycle: 5
+daemon:
+  poll_interval_seconds: 60
+  settle_seconds: 120
+  max_attachment_wait_seconds: 1800
+  allowed_item_types: [journalArticle, conferencePaper, preprint, book, bookSection, thesis, report]

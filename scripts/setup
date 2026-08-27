@@ -1,0 +1,17 @@
+#!/bin/sh
+# POSIX launcher: the Python assistant owns all state-changing prompts.
+set -eu
+case "$(uname -s)" in
+  Darwin) ;;
+  Linux) grep -qi ubuntu /etc/os-release 2>/dev/null || echo "Note: guided defaults are tuned for Ubuntu." ;;
+  *) echo "Guided defaults are intended for macOS and Ubuntu." ;;
+esac
+if ! command -v uv >/dev/null 2>&1; then
+  echo "uv is required. Install it from https://docs.astral.sh/uv/ and re-run scripts/setup." >&2
+  exit 1
+fi
+script_dir=$(CDPATH= cd -- "$(dirname "$0")" && pwd)
+root=$(CDPATH= cd -- "$script_dir/.." && pwd)
+export ZOTERO_ORGANISER_PROJECT_ROOT="$root"
+cd "$root"
+exec uv run python -m zotero_organiser.setup

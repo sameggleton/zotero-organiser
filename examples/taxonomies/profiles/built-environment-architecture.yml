@@ -1,0 +1,185 @@
+schema_version: 1
+version: "1.0.0"
+
+description: >
+  Covers architecture, building science, urban and regional planning, infrastructure design and the interaction between people and constructed environments.
+
+conventions:
+  separator: "/"
+  canonical_tag_format: "{namespace}/{value}"
+  allow_unlisted_values: false
+  prefer_precision_over_recall: true
+  avoid_metadata_duplication: true
+  metadata_fields_not_to_tag:
+    - author
+    - journal
+    - year
+    - doi
+    - publisher
+    - institution
+  notes:
+    - "Collections/folders organize projects; tags reflect intrinsic content."
+    - "Role describes contribution style (empirical, theoretical, review, method)."
+    - "Topic describes substantive domain questions, phenomena, or theories."
+    - "System describes the physical, biological, conceptual, or social entity investigated."
+    - "Method describes specific investigative techniques, protocols, or models."
+    - "Status and priority are human-managed workflow namespaces."
+
+classifier:
+  semantic_namespaces:
+    - role
+    - topic
+    - system
+    - method
+  workflow_namespaces:
+    - status
+  human_only_namespaces:
+    - priority
+  rules:
+    - "Never invent a tag not defined in this taxonomy."
+    - "Do not tag a concept merely because it is mentioned in passing."
+    - "Prefer the most specific applicable canonical tag without adding redundant synonyms."
+    - "Do not infer priority or reading status from document content."
+    - "Use aliases only for recognition and normalisation; always emit the canonical tag."
+
+relationships: []
+
+namespaces:
+
+  status:
+    description: "Reading and processing workflow state."
+    kind: workflow
+    classifier_eligible: false
+    max_tags: 1
+    mutually_exclusive: true
+    user_managed:
+      - reading
+      - read
+      - processed
+    values:
+      needs-triage:
+        description: "Item requires human review or candidate tags await confirmation."
+        aliases: ["triage", "needs review", "needs-review"]
+      to-read:
+        description: "Item has been queued into the reading list."
+        aliases: ["unread", "to read", "to_read"]
+      reading:
+        description: "Item is actively being read."
+      read:
+        description: "Item has been read and understood."
+        aliases: ["done"]
+      processed:
+        description: "Notes or knowledge have been extracted into broader research workflow."
+
+  priority:
+    description: "User judgement about importance or urgency to revisit."
+    kind: judgement
+    classifier_eligible: false
+    max_tags: 2
+    values:
+      core:
+        description: "Foundational reference essential to ongoing projects."
+        aliases: ["essential", "seminal", "must-read", "foundational"]
+      high:
+        description: "Highly relevant paper containing important results or techniques."
+        aliases: ["important", "key-reference"]
+      revisit:
+        description: "Contains specific derivations, tables, or parameters to revisit later."
+        aliases: ["bookmark", "check-later", "reference-back"]
+
+  role:
+    description: "Contribution style or epistemic purpose the work serves in the literature."
+    kind: semantic
+    classifier_eligible: true
+    max_tags: 2
+    values:
+      review:
+        description: "Synthesises an established body of literature rather than presenting only a single narrow result."
+        aliases: ["review article", "survey", "overview", "systematic review", "meta-analysis"]
+      empirical:
+        description: "Presents primary empirical data, field/laboratory observations, or experimental measurements."
+        aliases: ["experimental", "empirical study", "measurement", "observational study"]
+      theoretical:
+        description: "Develops formal analytical theory, mathematical derivations, or conceptual frameworks."
+        aliases: ["theory", "analytical model", "conceptual framework", "formal derivation"]
+      methodological:
+        description: "Introduces or evaluates a new algorithm, experimental protocol, measurement tool, or analytical workflow."
+        aliases: ["methodology", "algorithm development", "protocol", "new method"]
+      computational:
+        description: "Presents numerical simulations, scientific computing models, or computational software tools."
+        aliases: ["simulation", "in silico", "numerical study", "computational model"]
+      application:
+        description: "Applies established methodologies to investigate a specific domain target or practical case study."
+        aliases: ["case study", "applied study", "field application"]
+      commentary:
+        description: "Editorial, commentary, position paper, or perspective on field directions."
+        aliases: ["perspective", "editorial", "position paper", "opinion"]
+
+  topic:
+    description: "Substantive domain phenomena, research questions, theories, or mechanisms."
+    kind: semantic
+    classifier_eligible: true
+    max_tags: 4
+    values:
+      architecture:
+        description: "Architectural theory, spatial design, historical preservation, architectural morphology, and parametric design."
+        aliases: ["spatial design", "architectural theory", "parametric design", "heritage preservation"]
+      urban-planning:
+        description: "Zoning, land-use planning, smart cities, transit-oriented development, and regional growth."
+        aliases: ["land use", "zoning", "smart cities", "transit-oriented development", "urban growth"]
+      building-science:
+        description: "Thermal comfort, building envelope, indoor air quality (IAQ), acoustics, and daylighting."
+        aliases: ["indoor air quality", "thermal comfort", "building envelope", "acoustics", "daylighting"]
+      urban-design:
+        description: "Public space design, pedestrian walkability, streetscapes, and placemaking."
+        aliases: ["public space", "walkability", "streetscape", "placemaking", "urban form"]
+      housing:
+        description: "Housing affordability, residential density, social housing, tenancy, and informal settlements."
+        aliases: ["affordable housing", "social housing", "tenancy", "housing density"]
+      infrastructure:
+        description: "Urban transport networks, water/energy utilities, civic facilities, and resilient infrastructure."
+        aliases: ["transport network", "civic infrastructure", "utility networks", "resilient infrastructure"]
+      sustainable-design:
+        description: "Net-zero buildings, circular construction materials, green infrastructure, and LEED/BREEAM."
+        aliases: ["net-zero building", "green infrastructure", "circular construction", "LEED", "passive design"]
+
+  system:
+    description: "Physical, biological, social, or computational entity under primary study."
+    kind: semantic
+    classifier_eligible: true
+    max_tags: 3
+    values:
+      buildings-and-envelopes:
+        description: "Residential towers, commercial complexes, educational facilities, and historic facades."
+        aliases: ["building", "residential tower", "commercial building", "facade"]
+      urban-neighbourhoods:
+        description: "City precincts, public plazas, transit hubs, and residential suburbs."
+        aliases: ["neighborhood", "precinct", "public square", "suburb"]
+      infrastructure-networks:
+        description: "Rail networks, highway corridors, stormwater systems, and district heating."
+        aliases: ["rail corridor", "stormwater network", "road network"]
+      construction-materials:
+        description: "Mass timber, low-carbon concrete, insulation materials, and glazing systems."
+        aliases: ["mass timber", "green concrete", "glazing", "insulation"]
+
+  method:
+    description: "Investigative, computational, analytical, or experimental techniques applied."
+    kind: semantic
+    classifier_eligible: true
+    max_tags: 3
+    values:
+      building-energy-simulation:
+        description: "EnergyPlus modeling, thermal load calculation, and computational daylight analysis."
+        aliases: ["EnergyPlus", "thermal simulation", "daylight modeling", "building simulation"]
+      spatial-and-gis-analysis:
+        description: "Space syntax, GIS multi-criteria evaluation, and demographic spatial modeling."
+        aliases: ["space syntax", "GIS mapping", "spatial multicriteria"]
+      post-occupancy-evaluation:
+        description: "Occupant surveys, indoor sensor logging, and thermal comfort benchmarking."
+        aliases: ["POE", "occupant survey", "sensor logging", "comfort monitoring"]
+      parametric-cad-modeling:
+        description: "BIM modeling, generative Grasshopper design, and digital twin simulation."
+        aliases: ["BIM", "digital twin", "grasshopper", "revit"]
+      urban-fieldwork-interviews:
+        description: "Participatory design workshops, stakeholder interviews, and site observation."
+        aliases: ["participatory planning", "site observation", "stakeholder workshop"]

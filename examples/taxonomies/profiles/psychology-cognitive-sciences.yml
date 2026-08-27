@@ -1,0 +1,188 @@
+schema_version: 1
+version: "1.0.0"
+
+description: >
+  Covers cognitive, behavioural, developmental, biological, social, personality, clinical and computational psychology.
+
+conventions:
+  separator: "/"
+  canonical_tag_format: "{namespace}/{value}"
+  allow_unlisted_values: false
+  prefer_precision_over_recall: true
+  avoid_metadata_duplication: true
+  metadata_fields_not_to_tag:
+    - author
+    - journal
+    - year
+    - doi
+    - publisher
+    - institution
+  notes:
+    - "Collections/folders organize projects; tags reflect intrinsic content."
+    - "Role describes contribution style (empirical, theoretical, review, method)."
+    - "Topic describes substantive domain questions, phenomena, or theories."
+    - "System describes the physical, biological, conceptual, or social entity investigated."
+    - "Method describes specific investigative techniques, protocols, or models."
+    - "Status and priority are human-managed workflow namespaces."
+
+classifier:
+  semantic_namespaces:
+    - role
+    - topic
+    - system
+    - method
+  workflow_namespaces:
+    - status
+  human_only_namespaces:
+    - priority
+  rules:
+    - "Never invent a tag not defined in this taxonomy."
+    - "Do not tag a concept merely because it is mentioned in passing."
+    - "Prefer the most specific applicable canonical tag without adding redundant synonyms."
+    - "Do not infer priority or reading status from document content."
+    - "Use aliases only for recognition and normalisation; always emit the canonical tag."
+
+relationships: []
+
+namespaces:
+
+  status:
+    description: "Reading and processing workflow state."
+    kind: workflow
+    classifier_eligible: false
+    max_tags: 1
+    mutually_exclusive: true
+    user_managed:
+      - reading
+      - read
+      - processed
+    values:
+      needs-triage:
+        description: "Item requires human review or candidate tags await confirmation."
+        aliases: ["triage", "needs review", "needs-review"]
+      to-read:
+        description: "Item has been queued into the reading list."
+        aliases: ["unread", "to read", "to_read"]
+      reading:
+        description: "Item is actively being read."
+      read:
+        description: "Item has been read and understood."
+        aliases: ["done"]
+      processed:
+        description: "Notes or knowledge have been extracted into broader research workflow."
+
+  priority:
+    description: "User judgement about importance or urgency to revisit."
+    kind: judgement
+    classifier_eligible: false
+    max_tags: 2
+    values:
+      core:
+        description: "Foundational reference essential to ongoing projects."
+        aliases: ["essential", "seminal", "must-read", "foundational"]
+      high:
+        description: "Highly relevant paper containing important results or techniques."
+        aliases: ["important", "key-reference"]
+      revisit:
+        description: "Contains specific derivations, tables, or parameters to revisit later."
+        aliases: ["bookmark", "check-later", "reference-back"]
+
+  role:
+    description: "Contribution style or epistemic purpose the work serves in the literature."
+    kind: semantic
+    classifier_eligible: true
+    max_tags: 2
+    values:
+      review:
+        description: "Synthesises an established body of literature rather than presenting only a single narrow result."
+        aliases: ["review article", "survey", "overview", "systematic review", "meta-analysis"]
+      empirical:
+        description: "Presents primary empirical data, field/laboratory observations, or experimental measurements."
+        aliases: ["experimental", "empirical study", "measurement", "observational study"]
+      theoretical:
+        description: "Develops formal analytical theory, mathematical derivations, or conceptual frameworks."
+        aliases: ["theory", "analytical model", "conceptual framework", "formal derivation"]
+      methodological:
+        description: "Introduces or evaluates a new algorithm, experimental protocol, measurement tool, or analytical workflow."
+        aliases: ["methodology", "algorithm development", "protocol", "new method"]
+      computational:
+        description: "Presents numerical simulations, scientific computing models, or computational software tools."
+        aliases: ["simulation", "in silico", "numerical study", "computational model"]
+      application:
+        description: "Applies established methodologies to investigate a specific domain target or practical case study."
+        aliases: ["case study", "applied study", "field application"]
+      commentary:
+        description: "Editorial, commentary, position paper, or perspective on field directions."
+        aliases: ["perspective", "editorial", "position paper", "opinion"]
+
+  topic:
+    description: "Substantive domain phenomena, research questions, theories, or mechanisms."
+    kind: semantic
+    classifier_eligible: true
+    max_tags: 4
+    values:
+      cognition:
+        description: "Working memory, attention, executive function, language comprehension, and mental representation."
+        aliases: ["working memory", "attention", "executive function", "cognitive control", "memory"]
+      behaviour:
+        description: "Operant/classical conditioning, habit formation, motivation, motor control, and behavioral change."
+        aliases: ["conditioning", "habit", "motivation", "behavior change", "motor control"]
+      developmental-psychology:
+        description: "Child development, cognitive aging, lifespan development, attachment, and language acquisition."
+        aliases: ["child development", "aging", "attachment theory", "lifespan", "language acquisition"]
+      social-psychology:
+        description: "Social cognition, intergroup relations, prejudice, conformity, empathy, and moral judgment."
+        aliases: ["social cognition", "intergroup bias", "conformity", "empathy", "moral psychology"]
+      cognitive-neuroscience:
+        description: "Neural correlates of cognition, fMRI/EEG neural dynamics, and brain connectivity."
+        aliases: ["fMRI", "EEG", "neural correlates", "brain connectivity", "neuroimaging"]
+      decision-making:
+        description: "Heuristics and biases, prospect theory, risk preferences, and neuroeconomics."
+        aliases: ["heuristics", "biases", "prospect theory", "risk preference", "choice architecture"]
+      perception:
+        description: "Visual perception, auditory processing, multisensory integration, and psychophysics."
+        aliases: ["visual perception", "auditory", "psychophysics", "multisensory"]
+      mental-health:
+        description: "Psychopathology, depression, anxiety, trauma/PTSD, psychotherapy outcomes, and resilience."
+        aliases: ["depression", "anxiety", "PTSD", "psychopathology", "psychotherapy", "resilience"]
+
+  system:
+    description: "Physical, biological, social, or computational entity under primary study."
+    kind: semantic
+    classifier_eligible: true
+    max_tags: 3
+    values:
+      human-participants:
+        description: "Undergraduate cohorts, clinical psychiatric cohorts, children, and aging adults."
+        aliases: ["participants", "clinical cohort", "student sample", "healthy volunteers"]
+      cognitive-architectures:
+        description: "Connectionist models, ACT-R architectures, and drift-diffusion decision models."
+        aliases: ["drift diffusion", "ACT-R", "connectionist model"]
+      neural-circuits:
+        description: "Prefrontal cortex, amygdala, hippocampus, and default mode network (DMN)."
+        aliases: ["prefrontal cortex", "hippocampus", "DMN", "amygdala"]
+      social-groups:
+        description: "Small decision groups, peer networks, romantic dyads, and cultural groups."
+        aliases: ["dyad", "peer group", "decision team"]
+
+  method:
+    description: "Investigative, computational, analytical, or experimental techniques applied."
+    kind: semantic
+    classifier_eligible: true
+    max_tags: 3
+    values:
+      behavioral-experiments:
+        description: "Reaction-time tasks, eye-tracking experiments, and computerized cognitive paradigms."
+        aliases: ["reaction time", "eye tracking", "stroop task", "cognitive test"]
+      neuroimaging-eeg:
+        description: "Task-based fMRI, event-related potentials (ERP), EEG band power, and MEG."
+        aliases: ["fMRI", "EEG", "ERP", "MEG", "neuroimaging"]
+      psychometric-measurement:
+        description: "Validated questionnaires, factor analysis (CFA/EFA), and item response theory (IRT)."
+        aliases: ["factor analysis", "IRT", "psychometrics", "questionnaire scale"]
+      computational-cognitive-modeling:
+        description: "Bayesian cognitive modeling, reinforcement learning models, and neural network simulations."
+        aliases: ["bayesian cognitive model", "reinforcement learning model", "computational model"]
+      clinical-intervention-trials:
+        description: "Randomized psychotherapy trials (CBT/mindfulness) and clinical symptom scoring."
+        aliases: ["CBT trial", "psychotherapy outcome", "clinical scoring"]

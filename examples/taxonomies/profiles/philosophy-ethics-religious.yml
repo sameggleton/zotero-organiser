@@ -1,0 +1,188 @@
+schema_version: 1
+version: "1.0.0"
+
+description: >
+  Covers philosophy, logic, epistemology, metaphysics, ethics, philosophy of science, religious studies and theology.
+
+conventions:
+  separator: "/"
+  canonical_tag_format: "{namespace}/{value}"
+  allow_unlisted_values: false
+  prefer_precision_over_recall: true
+  avoid_metadata_duplication: true
+  metadata_fields_not_to_tag:
+    - author
+    - journal
+    - year
+    - doi
+    - publisher
+    - institution
+  notes:
+    - "Collections/folders organize projects; tags reflect intrinsic content."
+    - "Role describes contribution style (empirical, theoretical, review, method)."
+    - "Topic describes substantive domain questions, phenomena, or theories."
+    - "System describes the physical, biological, conceptual, or social entity investigated."
+    - "Method describes specific investigative techniques, protocols, or models."
+    - "Status and priority are human-managed workflow namespaces."
+
+classifier:
+  semantic_namespaces:
+    - role
+    - topic
+    - system
+    - method
+  workflow_namespaces:
+    - status
+  human_only_namespaces:
+    - priority
+  rules:
+    - "Never invent a tag not defined in this taxonomy."
+    - "Do not tag a concept merely because it is mentioned in passing."
+    - "Prefer the most specific applicable canonical tag without adding redundant synonyms."
+    - "Do not infer priority or reading status from document content."
+    - "Use aliases only for recognition and normalisation; always emit the canonical tag."
+
+relationships: []
+
+namespaces:
+
+  status:
+    description: "Reading and processing workflow state."
+    kind: workflow
+    classifier_eligible: false
+    max_tags: 1
+    mutually_exclusive: true
+    user_managed:
+      - reading
+      - read
+      - processed
+    values:
+      needs-triage:
+        description: "Item requires human review or candidate tags await confirmation."
+        aliases: ["triage", "needs review", "needs-review"]
+      to-read:
+        description: "Item has been queued into the reading list."
+        aliases: ["unread", "to read", "to_read"]
+      reading:
+        description: "Item is actively being read."
+      read:
+        description: "Item has been read and understood."
+        aliases: ["done"]
+      processed:
+        description: "Notes or knowledge have been extracted into broader research workflow."
+
+  priority:
+    description: "User judgement about importance or urgency to revisit."
+    kind: judgement
+    classifier_eligible: false
+    max_tags: 2
+    values:
+      core:
+        description: "Foundational reference essential to ongoing projects."
+        aliases: ["essential", "seminal", "must-read", "foundational"]
+      high:
+        description: "Highly relevant paper containing important results or techniques."
+        aliases: ["important", "key-reference"]
+      revisit:
+        description: "Contains specific derivations, tables, or parameters to revisit later."
+        aliases: ["bookmark", "check-later", "reference-back"]
+
+  role:
+    description: "Contribution style or epistemic purpose the work serves in the literature."
+    kind: semantic
+    classifier_eligible: true
+    max_tags: 2
+    values:
+      review:
+        description: "Synthesises an established body of literature rather than presenting only a single narrow result."
+        aliases: ["review article", "survey", "overview", "systematic review", "meta-analysis"]
+      empirical:
+        description: "Presents primary empirical data, field/laboratory observations, or experimental measurements."
+        aliases: ["experimental", "empirical study", "measurement", "observational study"]
+      theoretical:
+        description: "Develops formal analytical theory, mathematical derivations, or conceptual frameworks."
+        aliases: ["theory", "analytical model", "conceptual framework", "formal derivation"]
+      methodological:
+        description: "Introduces or evaluates a new algorithm, experimental protocol, measurement tool, or analytical workflow."
+        aliases: ["methodology", "algorithm development", "protocol", "new method"]
+      computational:
+        description: "Presents numerical simulations, scientific computing models, or computational software tools."
+        aliases: ["simulation", "in silico", "numerical study", "computational model"]
+      application:
+        description: "Applies established methodologies to investigate a specific domain target or practical case study."
+        aliases: ["case study", "applied study", "field application"]
+      commentary:
+        description: "Editorial, commentary, position paper, or perspective on field directions."
+        aliases: ["perspective", "editorial", "position paper", "opinion"]
+
+  topic:
+    description: "Substantive domain phenomena, research questions, theories, or mechanisms."
+    kind: semantic
+    classifier_eligible: true
+    max_tags: 4
+    values:
+      philosophy:
+        description: "Analytic/continental philosophy, history of philosophy, aesthetics, and political philosophy."
+        aliases: ["analytic philosophy", "continental philosophy", "political philosophy", "aesthetics"]
+      ethics:
+        description: "Normative ethics (utilitarianism, deontology, virtue ethics), metaethics, and applied ethics."
+        aliases: ["normative ethics", "applied ethics", "metaethics", "virtue ethics", "deontology", "bioethics"]
+      epistemology:
+        description: "Theory of knowledge, justified true belief, skepticism, epistemic injustice, and Bayesian epistemology."
+        aliases: ["theory of knowledge", "epistemic injustice", "skepticism", "justification", "bayesian epistemology"]
+      metaphysics:
+        description: "Ontology, modality, causation, time, personal identity, and philosophy of mind."
+        aliases: ["ontology", "modality", "causation", "philosophy of mind", "consciousness"]
+      logic:
+        description: "Formal logic, modal logic, mathematical logic, non-classical logic, and argumentation."
+        aliases: ["formal logic", "modal logic", "proof theory", "non-classical logic", "syllogism"]
+      philosophy-of-science:
+        description: "Scientific realism, reductionism, demarcation, explanation, and philosophy of physics/biology."
+        aliases: ["scientific realism", "demarcation", "philosophy of physics", "scientific explanation"]
+      religion:
+        description: "Comparative religion, sociology of religion, religious ritual, and secularization."
+        aliases: ["comparative religion", "sociology of religion", "religious ritual", "secularization"]
+      theology:
+        description: "Systematic theology, biblical hermeneutics, doctrinal history, and interfaith dialogue."
+        aliases: ["systematic theology", "hermeneutics", "scriptural exegesis", "doctrine"]
+
+  system:
+    description: "Physical, biological, social, or computational entity under primary study."
+    kind: semantic
+    classifier_eligible: true
+    max_tags: 3
+    values:
+      philosophical-traditions:
+        description: "Analytic, phenomenology, existentialism, pragmatism, and Eastern philosophical traditions."
+        aliases: ["analytic tradition", "phenomenology", "pragmatism", "buddhism", "stoicism"]
+      ethical-frameworks:
+        description: "Kantian deontology, utilitarian maximization, virtue ethics, and care ethics."
+        aliases: ["utilitarianism", "kantian", "virtue ethics", "ethics of care"]
+      religious-traditions:
+        description: "Christianity, Islam, Judaism, Buddhism, Hinduism, and indigenous spiritualities."
+        aliases: ["christianity", "islam", "judaism", "buddhism", "hinduism"]
+      conceptual-systems:
+        description: "Formal axiomatic systems, metaphysical models, and epistemological frameworks."
+        aliases: ["axiomatic system", "ontology model", "formal framework"]
+
+  method:
+    description: "Investigative, computational, analytical, or experimental techniques applied."
+    kind: semantic
+    classifier_eligible: true
+    max_tags: 3
+    values:
+      conceptual-analysis:
+        description: "Thought experiments, counterexample formulation, and logical definition dissection."
+        aliases: ["thought experiment", "counterexample", "conceptual analysis"]
+      formal-logical-proof:
+        description: "Model-theoretic proofs, natural deduction derivations, and semantic tableau methods."
+        aliases: ["formal proof", "natural deduction", "model theory", "tableau"]
+      historical-philosophical-reconstruction:
+        description: "Exegesis of historical philosophical texts and contextual philosophical argument analysis."
+        aliases: ["textual exegesis", "philosophical history", "textual reconstruction"]
+      scriptural-exegesis:
+        description: "Historical-critical biblical exegesis, linguistic translation, and theological commentary."
+        aliases: ["biblical exegesis", "historical-critical", "scriptural commentary"]
+      normative-ethical-argumentation:
+        description: "Applied ethical reasoning, reflective equilibrium, and moral dilemma resolution."
+        aliases: ["reflective equilibrium", "moral reasoning", "ethical analysis"]

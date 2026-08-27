@@ -1,0 +1,188 @@
+schema_version: 1
+version: "1.0.0"
+
+description: >
+  Covers sociology, anthropology, demography, political science, public policy, development studies, human geography, social work and related studies of human societies.
+
+conventions:
+  separator: "/"
+  canonical_tag_format: "{namespace}/{value}"
+  allow_unlisted_values: false
+  prefer_precision_over_recall: true
+  avoid_metadata_duplication: true
+  metadata_fields_not_to_tag:
+    - author
+    - journal
+    - year
+    - doi
+    - publisher
+    - institution
+  notes:
+    - "Collections/folders organize projects; tags reflect intrinsic content."
+    - "Role describes contribution style (empirical, theoretical, review, method)."
+    - "Topic describes substantive domain questions, phenomena, or theories."
+    - "System describes the physical, biological, conceptual, or social entity investigated."
+    - "Method describes specific investigative techniques, protocols, or models."
+    - "Status and priority are human-managed workflow namespaces."
+
+classifier:
+  semantic_namespaces:
+    - role
+    - topic
+    - system
+    - method
+  workflow_namespaces:
+    - status
+  human_only_namespaces:
+    - priority
+  rules:
+    - "Never invent a tag not defined in this taxonomy."
+    - "Do not tag a concept merely because it is mentioned in passing."
+    - "Prefer the most specific applicable canonical tag without adding redundant synonyms."
+    - "Do not infer priority or reading status from document content."
+    - "Use aliases only for recognition and normalisation; always emit the canonical tag."
+
+relationships: []
+
+namespaces:
+
+  status:
+    description: "Reading and processing workflow state."
+    kind: workflow
+    classifier_eligible: false
+    max_tags: 1
+    mutually_exclusive: true
+    user_managed:
+      - reading
+      - read
+      - processed
+    values:
+      needs-triage:
+        description: "Item requires human review or candidate tags await confirmation."
+        aliases: ["triage", "needs review", "needs-review"]
+      to-read:
+        description: "Item has been queued into the reading list."
+        aliases: ["unread", "to read", "to_read"]
+      reading:
+        description: "Item is actively being read."
+      read:
+        description: "Item has been read and understood."
+        aliases: ["done"]
+      processed:
+        description: "Notes or knowledge have been extracted into broader research workflow."
+
+  priority:
+    description: "User judgement about importance or urgency to revisit."
+    kind: judgement
+    classifier_eligible: false
+    max_tags: 2
+    values:
+      core:
+        description: "Foundational reference essential to ongoing projects."
+        aliases: ["essential", "seminal", "must-read", "foundational"]
+      high:
+        description: "Highly relevant paper containing important results or techniques."
+        aliases: ["important", "key-reference"]
+      revisit:
+        description: "Contains specific derivations, tables, or parameters to revisit later."
+        aliases: ["bookmark", "check-later", "reference-back"]
+
+  role:
+    description: "Contribution style or epistemic purpose the work serves in the literature."
+    kind: semantic
+    classifier_eligible: true
+    max_tags: 2
+    values:
+      review:
+        description: "Synthesises an established body of literature rather than presenting only a single narrow result."
+        aliases: ["review article", "survey", "overview", "systematic review", "meta-analysis"]
+      empirical:
+        description: "Presents primary empirical data, field/laboratory observations, or experimental measurements."
+        aliases: ["experimental", "empirical study", "measurement", "observational study"]
+      theoretical:
+        description: "Develops formal analytical theory, mathematical derivations, or conceptual frameworks."
+        aliases: ["theory", "analytical model", "conceptual framework", "formal derivation"]
+      methodological:
+        description: "Introduces or evaluates a new algorithm, experimental protocol, measurement tool, or analytical workflow."
+        aliases: ["methodology", "algorithm development", "protocol", "new method"]
+      computational:
+        description: "Presents numerical simulations, scientific computing models, or computational software tools."
+        aliases: ["simulation", "in silico", "numerical study", "computational model"]
+      application:
+        description: "Applies established methodologies to investigate a specific domain target or practical case study."
+        aliases: ["case study", "applied study", "field application"]
+      commentary:
+        description: "Editorial, commentary, position paper, or perspective on field directions."
+        aliases: ["perspective", "editorial", "position paper", "opinion"]
+
+  topic:
+    description: "Substantive domain phenomena, research questions, theories, or mechanisms."
+    kind: semantic
+    classifier_eligible: true
+    max_tags: 4
+    values:
+      sociology:
+        description: "Social stratification, inequality, gender studies, race/ethnicity, and social movements."
+        aliases: ["social inequality", "stratification", "gender studies", "social movements", "sociological theory"]
+      anthropology:
+        description: "Cultural anthropology, ethnography, kinship, ritual practices, and material culture."
+        aliases: ["ethnography", "cultural anthropology", "kinship", "ritual", "fieldwork"]
+      political-science:
+        description: "Comparative politics, democratic institutions, authoritarianism, electoral systems, and political theory."
+        aliases: ["comparative politics", "elections", "democracy", "authoritarianism", "political theory"]
+      public-policy:
+        description: "Policy evaluation, agenda setting, regulatory governance, policy diffusion, and public administration."
+        aliases: ["policy analysis", "public administration", "governance", "policy diffusion"]
+      demography:
+        description: "Fertility, mortality, population aging, migration flows, and demographic transitions."
+        aliases: ["migration", "fertility", "population aging", "mortality", "demographic transition"]
+      development-studies:
+        description: "Global south development, agrarian change, community empowerment, and structural adjustment."
+        aliases: ["international development", "global south", "agrarian change", "aid"]
+      human-geography:
+        description: "Spatial inequality, urban geography, political geography, gentrification, and mobilities."
+        aliases: ["urban geography", "gentrification", "spatial politics", "mobilities", "geopolitics"]
+      social-work:
+        description: "Child welfare, community development, social justice practice, and human services delivery."
+        aliases: ["child welfare", "social care", "community work", "human services"]
+
+  system:
+    description: "Physical, biological, social, or computational entity under primary study."
+    kind: semantic
+    classifier_eligible: true
+    max_tags: 3
+    values:
+      nation-states-and-polities:
+        description: "Governments, legislatures, political parties, and state apparatuses."
+        aliases: ["nation state", "government", "parliament", "political party"]
+      social-groups-and-classes:
+        description: "Working class communities, migrant diasporas, marginalized groups, and elite networks."
+        aliases: ["diaspora", "working class", "minority group", "elite network"]
+      urban-and-regional-spaces:
+        description: "Metropolitan regions, rural municipalities, border zones, and informal settlements."
+        aliases: ["megacity", "rural community", "borderland", "informal settlement"]
+      international-institutions:
+        description: "United Nations agencies, international NGOs, regional pacts, and global treaties."
+        aliases: ["UN", "NGO", "international treaty", "transnational body"]
+
+  method:
+    description: "Investigative, computational, analytical, or experimental techniques applied."
+    kind: semantic
+    classifier_eligible: true
+    max_tags: 3
+    values:
+      ethnographic-fieldwork:
+        description: "Participant observation, deep immersion, field notes, and reflexive ethnography."
+        aliases: ["participant observation", "ethnography", "fieldwork"]
+      comparative-political-analysis:
+        description: "Qualitative comparative analysis (QCA), cross-national regression, and case comparisons."
+        aliases: ["QCA", "cross-national comparison", "comparative politics method"]
+      survey-and-demographic-analysis:
+        description: "National social surveys, demographic life tables, census microdata analysis, and weights."
+        aliases: ["social survey", "life table", "demographic analysis"]
+      discourse-and-textual-analysis:
+        description: "Critical discourse analysis (CDA), policy document coding, and political rhetoric analysis."
+        aliases: ["CDA", "discourse analysis", "document coding", "content analysis"]
+      spatial-social-gis:
+        description: "Geodemographic profiling, spatial autocorrelation (Moran's I), and spatial regression."
+        aliases: ["spatial regression", "geodemographics", "spatial analysis social"]

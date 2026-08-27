@@ -1,0 +1,188 @@
+schema_version: 1
+version: "1.0.0"
+
+description: >
+  Covers literary studies, comparative literature, textual scholarship, rhetoric, creative writing and related analysis of written works.
+
+conventions:
+  separator: "/"
+  canonical_tag_format: "{namespace}/{value}"
+  allow_unlisted_values: false
+  prefer_precision_over_recall: true
+  avoid_metadata_duplication: true
+  metadata_fields_not_to_tag:
+    - author
+    - journal
+    - year
+    - doi
+    - publisher
+    - institution
+  notes:
+    - "Collections/folders organize projects; tags reflect intrinsic content."
+    - "Role describes contribution style (empirical, theoretical, review, method)."
+    - "Topic describes substantive domain questions, phenomena, or theories."
+    - "System describes the physical, biological, conceptual, or social entity investigated."
+    - "Method describes specific investigative techniques, protocols, or models."
+    - "Status and priority are human-managed workflow namespaces."
+
+classifier:
+  semantic_namespaces:
+    - role
+    - topic
+    - system
+    - method
+  workflow_namespaces:
+    - status
+  human_only_namespaces:
+    - priority
+  rules:
+    - "Never invent a tag not defined in this taxonomy."
+    - "Do not tag a concept merely because it is mentioned in passing."
+    - "Prefer the most specific applicable canonical tag without adding redundant synonyms."
+    - "Do not infer priority or reading status from document content."
+    - "Use aliases only for recognition and normalisation; always emit the canonical tag."
+
+relationships: []
+
+namespaces:
+
+  status:
+    description: "Reading and processing workflow state."
+    kind: workflow
+    classifier_eligible: false
+    max_tags: 1
+    mutually_exclusive: true
+    user_managed:
+      - reading
+      - read
+      - processed
+    values:
+      needs-triage:
+        description: "Item requires human review or candidate tags await confirmation."
+        aliases: ["triage", "needs review", "needs-review"]
+      to-read:
+        description: "Item has been queued into the reading list."
+        aliases: ["unread", "to read", "to_read"]
+      reading:
+        description: "Item is actively being read."
+      read:
+        description: "Item has been read and understood."
+        aliases: ["done"]
+      processed:
+        description: "Notes or knowledge have been extracted into broader research workflow."
+
+  priority:
+    description: "User judgement about importance or urgency to revisit."
+    kind: judgement
+    classifier_eligible: false
+    max_tags: 2
+    values:
+      core:
+        description: "Foundational reference essential to ongoing projects."
+        aliases: ["essential", "seminal", "must-read", "foundational"]
+      high:
+        description: "Highly relevant paper containing important results or techniques."
+        aliases: ["important", "key-reference"]
+      revisit:
+        description: "Contains specific derivations, tables, or parameters to revisit later."
+        aliases: ["bookmark", "check-later", "reference-back"]
+
+  role:
+    description: "Contribution style or epistemic purpose the work serves in the literature."
+    kind: semantic
+    classifier_eligible: true
+    max_tags: 2
+    values:
+      review:
+        description: "Synthesises an established body of literature rather than presenting only a single narrow result."
+        aliases: ["review article", "survey", "overview", "systematic review", "meta-analysis"]
+      empirical:
+        description: "Presents primary empirical data, field/laboratory observations, or experimental measurements."
+        aliases: ["experimental", "empirical study", "measurement", "observational study"]
+      theoretical:
+        description: "Develops formal analytical theory, mathematical derivations, or conceptual frameworks."
+        aliases: ["theory", "analytical model", "conceptual framework", "formal derivation"]
+      methodological:
+        description: "Introduces or evaluates a new algorithm, experimental protocol, measurement tool, or analytical workflow."
+        aliases: ["methodology", "algorithm development", "protocol", "new method"]
+      computational:
+        description: "Presents numerical simulations, scientific computing models, or computational software tools."
+        aliases: ["simulation", "in silico", "numerical study", "computational model"]
+      application:
+        description: "Applies established methodologies to investigate a specific domain target or practical case study."
+        aliases: ["case study", "applied study", "field application"]
+      commentary:
+        description: "Editorial, commentary, position paper, or perspective on field directions."
+        aliases: ["perspective", "editorial", "position paper", "opinion"]
+
+  topic:
+    description: "Substantive domain phenomena, research questions, theories, or mechanisms."
+    kind: semantic
+    classifier_eligible: true
+    max_tags: 4
+    values:
+      literature:
+        description: "Poetry, prose fiction, drama, literary periods (Renaissance, Romanticism, Modernism, Postmodernism)."
+        aliases: ["fiction", "poetry", "drama", "novel", "modernism", "romanticism", "victorian literature"]
+      literary-theory:
+        description: "Deconstruction, feminist literary theory, ecocriticism, psychoanalytic criticism, and structuralism."
+        aliases: ["ecocriticism", "deconstruction", "feminist theory", "narratology", "poststructuralism"]
+      comparative-literature:
+        description: "World literature, translation studies, intertextuality, and cross-cultural literary influence."
+        aliases: ["world literature", "translation studies", "intertextuality", "transnational literature"]
+      textual-studies:
+        description: "Book history, critical editions, manuscript studies, bibliography, and digital humanities text mining."
+        aliases: ["book history", "manuscript studies", "bibliography", "critical edition", "paleography"]
+      rhetoric:
+        description: "Classical rhetoric, persuasive argumentation, stylistic tropes, and composition studies."
+        aliases: ["persuasion", "argumentation", "composition", "classical rhetoric", "stylistics"]
+      creative-writing:
+        description: "Craft of fiction, poetry poetics, creative non-fiction, memoir, and writing pedagogy."
+        aliases: ["poetics", "memoir", "creative non-fiction", "craft of writing", "creative practice"]
+      narrative:
+        description: "Narratology, story structure, point of view, temporal distortion, and focalization."
+        aliases: ["narratology", "storytelling", "narrative structure", "focalization"]
+      postcolonial-literature:
+        description: "Subaltern voices, diaspora literature, settler-colonial poetics, and indigenous literatures."
+        aliases: ["postcolonial", "subaltern", "diaspora literature", "anticolonial"]
+
+  system:
+    description: "Physical, biological, social, or computational entity under primary study."
+    kind: semantic
+    classifier_eligible: true
+    max_tags: 3
+    values:
+      literary-works:
+        description: "Novels, poetic anthologies, playscripts, epic poems, and essays."
+        aliases: ["novel", "poem", "play", "anthology", "literary text"]
+      manuscripts-and-archives:
+        description: "Author manuscripts, letters, drafts, rare book collections, and folios."
+        aliases: ["manuscript", "archive", "rare book", "folio"]
+      literary-movements:
+        description: "Romanticism, Harlem Renaissance, Beat Generation, Magical Realism, and Postmodernism."
+        aliases: ["literary movement", "modernist circle", "avant-garde"]
+      publishing-institutions:
+        description: "Literary magazines, university presses, independent publishers, and book trade networks."
+        aliases: ["publisher", "literary journal", "small press"]
+
+  method:
+    description: "Investigative, computational, analytical, or experimental techniques applied."
+    kind: semantic
+    classifier_eligible: true
+    max_tags: 3
+    values:
+      close-reading:
+        description: "Nuanced line-by-line textual interpretation, stylistic analysis, and figurative decoding."
+        aliases: ["close reading", "textual interpretation", "stylistic analysis"]
+      hermeneutic-analysis:
+        description: "Interpretive contextualization, philosophical hermeneutics, and reader-response critique."
+        aliases: ["hermeneutics", "reader response", "critical interpretation"]
+      computational-literary-analysis:
+        description: "Stylometry, topic modeling of corpora, sentiment trajectories, and digital humanities tools."
+        aliases: ["stylometry", "distant reading", "topic modeling", "digital humanities"]
+      archival-textual-editing:
+        description: "Collation of variant editions, stemmatology, and critical apparatus preparation."
+        aliases: ["critical editing", "collation", "stemmatology", "archival transcription"]
+      creative-critical-practice:
+        description: "Exegesis, practitioner reflection, creative craft commentary, and draft iteration."
+        aliases: ["creative exegesis", "craft reflection", "practitioner research"]

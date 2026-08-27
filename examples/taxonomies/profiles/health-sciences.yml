@@ -1,0 +1,188 @@
+schema_version: 1
+version: "1.0.0"
+
+description: >
+  Covers population and applied health research including epidemiology, public health, nursing, allied health, rehabilitation, health systems, exercise science and healthcare delivery.
+
+conventions:
+  separator: "/"
+  canonical_tag_format: "{namespace}/{value}"
+  allow_unlisted_values: false
+  prefer_precision_over_recall: true
+  avoid_metadata_duplication: true
+  metadata_fields_not_to_tag:
+    - author
+    - journal
+    - year
+    - doi
+    - publisher
+    - institution
+  notes:
+    - "Collections/folders organize projects; tags reflect intrinsic content."
+    - "Role describes contribution style (empirical, theoretical, review, method)."
+    - "Topic describes substantive domain questions, phenomena, or theories."
+    - "System describes the physical, biological, conceptual, or social entity investigated."
+    - "Method describes specific investigative techniques, protocols, or models."
+    - "Status and priority are human-managed workflow namespaces."
+
+classifier:
+  semantic_namespaces:
+    - role
+    - topic
+    - system
+    - method
+  workflow_namespaces:
+    - status
+  human_only_namespaces:
+    - priority
+  rules:
+    - "Never invent a tag not defined in this taxonomy."
+    - "Do not tag a concept merely because it is mentioned in passing."
+    - "Prefer the most specific applicable canonical tag without adding redundant synonyms."
+    - "Do not infer priority or reading status from document content."
+    - "Use aliases only for recognition and normalisation; always emit the canonical tag."
+
+relationships: []
+
+namespaces:
+
+  status:
+    description: "Reading and processing workflow state."
+    kind: workflow
+    classifier_eligible: false
+    max_tags: 1
+    mutually_exclusive: true
+    user_managed:
+      - reading
+      - read
+      - processed
+    values:
+      needs-triage:
+        description: "Item requires human review or candidate tags await confirmation."
+        aliases: ["triage", "needs review", "needs-review"]
+      to-read:
+        description: "Item has been queued into the reading list."
+        aliases: ["unread", "to read", "to_read"]
+      reading:
+        description: "Item is actively being read."
+      read:
+        description: "Item has been read and understood."
+        aliases: ["done"]
+      processed:
+        description: "Notes or knowledge have been extracted into broader research workflow."
+
+  priority:
+    description: "User judgement about importance or urgency to revisit."
+    kind: judgement
+    classifier_eligible: false
+    max_tags: 2
+    values:
+      core:
+        description: "Foundational reference essential to ongoing projects."
+        aliases: ["essential", "seminal", "must-read", "foundational"]
+      high:
+        description: "Highly relevant paper containing important results or techniques."
+        aliases: ["important", "key-reference"]
+      revisit:
+        description: "Contains specific derivations, tables, or parameters to revisit later."
+        aliases: ["bookmark", "check-later", "reference-back"]
+
+  role:
+    description: "Contribution style or epistemic purpose the work serves in the literature."
+    kind: semantic
+    classifier_eligible: true
+    max_tags: 2
+    values:
+      review:
+        description: "Synthesises an established body of literature rather than presenting only a single narrow result."
+        aliases: ["review article", "survey", "overview", "systematic review", "meta-analysis"]
+      empirical:
+        description: "Presents primary empirical data, field/laboratory observations, or experimental measurements."
+        aliases: ["experimental", "empirical study", "measurement", "observational study"]
+      theoretical:
+        description: "Develops formal analytical theory, mathematical derivations, or conceptual frameworks."
+        aliases: ["theory", "analytical model", "conceptual framework", "formal derivation"]
+      methodological:
+        description: "Introduces or evaluates a new algorithm, experimental protocol, measurement tool, or analytical workflow."
+        aliases: ["methodology", "algorithm development", "protocol", "new method"]
+      computational:
+        description: "Presents numerical simulations, scientific computing models, or computational software tools."
+        aliases: ["simulation", "in silico", "numerical study", "computational model"]
+      application:
+        description: "Applies established methodologies to investigate a specific domain target or practical case study."
+        aliases: ["case study", "applied study", "field application"]
+      commentary:
+        description: "Editorial, commentary, position paper, or perspective on field directions."
+        aliases: ["perspective", "editorial", "position paper", "opinion"]
+
+  topic:
+    description: "Substantive domain phenomena, research questions, theories, or mechanisms."
+    kind: semantic
+    classifier_eligible: true
+    max_tags: 4
+    values:
+      epidemiology:
+        description: "Cohort studies, disease incidence, risk factors, infectious disease modeling, and causal inference."
+        aliases: ["cohort study", "incidence", "prevalence", "risk factor", "case-control", "disease burden"]
+      public-health:
+        description: "Health promotion, disease prevention, global health, health disparities, and environmental health."
+        aliases: ["global health", "health promotion", "prevention", "health disparities", "social determinants"]
+      health-services:
+        description: "Healthcare quality, clinical outcomes, patient safety, hospital operations, and telemedicine."
+        aliases: ["healthcare delivery", "patient safety", "telemedicine", "quality of care", "clinical workflow"]
+      nursing:
+        description: "Nursing care protocols, patient-centered care, nurse staffing, and clinical nursing practice."
+        aliases: ["nursing care", "patient centered", "clinical nursing", "nursing education"]
+      rehabilitation:
+        description: "Physical therapy, occupational therapy, functional recovery, and disability management."
+        aliases: ["physical therapy", "occupational therapy", "physiotherapy", "disability"]
+      allied-health:
+        description: "Dietetics, speech pathology, clinical psychology, podiatry, and diagnostic radiography."
+        aliases: ["dietetics", "nutrition", "speech pathology", "radiography", "audiology"]
+      exercise-science:
+        description: "Exercise physiology, biomechanics, sports performance, physical activity, and athletic training."
+        aliases: ["biomechanics", "physical activity", "sports science", "exercise physiology", "kinesiology"]
+      health-policy:
+        description: "Health economics, insurance systems, health technology assessment (HTA), and policy reform."
+        aliases: ["health economics", "HTA", "insurance", "policy reform", "health expenditure"]
+
+  system:
+    description: "Physical, biological, social, or computational entity under primary study."
+    kind: semantic
+    classifier_eligible: true
+    max_tags: 3
+    values:
+      health-systems:
+        description: "Hospitals, primary care clinics, national health services, and community care centers."
+        aliases: ["hospital", "clinic", "health system", "NHS", "primary care"]
+      target-populations:
+        description: "Elderly cohorts, pediatric patients, vulnerable communities, and workforce groups."
+        aliases: ["elderly", "pediatric", "vulnerable population", "workers"]
+      health-datasets:
+        description: "Electronic health records (EHR), national registry databases, and claims datasets."
+        aliases: ["EHR", "health registry", "claims data", "vital statistics"]
+      community-settings:
+        description: "Schools, workplaces, rural communities, and municipal health districts."
+        aliases: ["community", "workplace", "rural health"]
+
+  method:
+    description: "Investigative, computational, analytical, or experimental techniques applied."
+    kind: semantic
+    classifier_eligible: true
+    max_tags: 3
+    values:
+      epidemiological-studies:
+        description: "Prospective cohort, case-control, cross-sectional, and ecological study designs."
+        aliases: ["cohort study", "case-control", "cross-sectional", "incidence study"]
+      health-economic-evaluation:
+        description: "Cost-effectiveness analysis (CEA), QALY calculations, and budget impact modeling."
+        aliases: ["cost-effectiveness", "CEA", "QALY", "ICER", "budget impact"]
+      implementation-science:
+        description: "Process evaluations, barrier analysis, fidelity metrics, and pragmatic trials."
+        aliases: ["implementation science", "pragmatic trial", "process evaluation", "fidelity"]
+      qualitative-health-research:
+        description: "In-depth patient interviews, focus groups, and phenomenological thematic analysis."
+        aliases: ["patient interviews", "focus groups", "qualitative health"]
+      biostatistical-modeling:
+        description: "Survival analysis (Cox models), logistic regression, and propensity score matching."
+        aliases: ["survival analysis", "cox model", "propensity score", "logistic regression"]

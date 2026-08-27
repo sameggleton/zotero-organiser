@@ -1,0 +1,188 @@
+schema_version: 1
+version: "1.0.0"
+
+description: >
+  Covers finance, accounting, management, marketing, organisational behaviour, strategy, entrepreneurship, logistics, tourism and operations.
+
+conventions:
+  separator: "/"
+  canonical_tag_format: "{namespace}/{value}"
+  allow_unlisted_values: false
+  prefer_precision_over_recall: true
+  avoid_metadata_duplication: true
+  metadata_fields_not_to_tag:
+    - author
+    - journal
+    - year
+    - doi
+    - publisher
+    - institution
+  notes:
+    - "Collections/folders organize projects; tags reflect intrinsic content."
+    - "Role describes contribution style (empirical, theoretical, review, method)."
+    - "Topic describes substantive domain questions, phenomena, or theories."
+    - "System describes the physical, biological, conceptual, or social entity investigated."
+    - "Method describes specific investigative techniques, protocols, or models."
+    - "Status and priority are human-managed workflow namespaces."
+
+classifier:
+  semantic_namespaces:
+    - role
+    - topic
+    - system
+    - method
+  workflow_namespaces:
+    - status
+  human_only_namespaces:
+    - priority
+  rules:
+    - "Never invent a tag not defined in this taxonomy."
+    - "Do not tag a concept merely because it is mentioned in passing."
+    - "Prefer the most specific applicable canonical tag without adding redundant synonyms."
+    - "Do not infer priority or reading status from document content."
+    - "Use aliases only for recognition and normalisation; always emit the canonical tag."
+
+relationships: []
+
+namespaces:
+
+  status:
+    description: "Reading and processing workflow state."
+    kind: workflow
+    classifier_eligible: false
+    max_tags: 1
+    mutually_exclusive: true
+    user_managed:
+      - reading
+      - read
+      - processed
+    values:
+      needs-triage:
+        description: "Item requires human review or candidate tags await confirmation."
+        aliases: ["triage", "needs review", "needs-review"]
+      to-read:
+        description: "Item has been queued into the reading list."
+        aliases: ["unread", "to read", "to_read"]
+      reading:
+        description: "Item is actively being read."
+      read:
+        description: "Item has been read and understood."
+        aliases: ["done"]
+      processed:
+        description: "Notes or knowledge have been extracted into broader research workflow."
+
+  priority:
+    description: "User judgement about importance or urgency to revisit."
+    kind: judgement
+    classifier_eligible: false
+    max_tags: 2
+    values:
+      core:
+        description: "Foundational reference essential to ongoing projects."
+        aliases: ["essential", "seminal", "must-read", "foundational"]
+      high:
+        description: "Highly relevant paper containing important results or techniques."
+        aliases: ["important", "key-reference"]
+      revisit:
+        description: "Contains specific derivations, tables, or parameters to revisit later."
+        aliases: ["bookmark", "check-later", "reference-back"]
+
+  role:
+    description: "Contribution style or epistemic purpose the work serves in the literature."
+    kind: semantic
+    classifier_eligible: true
+    max_tags: 2
+    values:
+      review:
+        description: "Synthesises an established body of literature rather than presenting only a single narrow result."
+        aliases: ["review article", "survey", "overview", "systematic review", "meta-analysis"]
+      empirical:
+        description: "Presents primary empirical data, field/laboratory observations, or experimental measurements."
+        aliases: ["experimental", "empirical study", "measurement", "observational study"]
+      theoretical:
+        description: "Develops formal analytical theory, mathematical derivations, or conceptual frameworks."
+        aliases: ["theory", "analytical model", "conceptual framework", "formal derivation"]
+      methodological:
+        description: "Introduces or evaluates a new algorithm, experimental protocol, measurement tool, or analytical workflow."
+        aliases: ["methodology", "algorithm development", "protocol", "new method"]
+      computational:
+        description: "Presents numerical simulations, scientific computing models, or computational software tools."
+        aliases: ["simulation", "in silico", "numerical study", "computational model"]
+      application:
+        description: "Applies established methodologies to investigate a specific domain target or practical case study."
+        aliases: ["case study", "applied study", "field application"]
+      commentary:
+        description: "Editorial, commentary, position paper, or perspective on field directions."
+        aliases: ["perspective", "editorial", "position paper", "opinion"]
+
+  topic:
+    description: "Substantive domain phenomena, research questions, theories, or mechanisms."
+    kind: semantic
+    classifier_eligible: true
+    max_tags: 4
+    values:
+      finance:
+        description: "Asset pricing, corporate finance, market microstructure, portfolio management, and financial risk."
+        aliases: ["asset pricing", "corporate finance", "portfolio management", "risk management", "fintech"]
+      accounting:
+        description: "Financial reporting, auditing, managerial accounting, earnings management, and corporate governance."
+        aliases: ["auditing", "financial reporting", "earnings management", "managerial accounting"]
+      management:
+        description: "Leadership, strategic human resources, organisational change, and business ethics."
+        aliases: ["leadership", "human resource management", "HRM", "organizational change", "governance"]
+      marketing:
+        description: "Consumer behavior, brand management, digital marketing, pricing strategy, and customer analytics."
+        aliases: ["consumer behavior", "branding", "digital marketing", "customer analytics", "advertising"]
+      organisational-behaviour:
+        description: "Team dynamics, workplace motivation, employee turnover, organisational culture, and conflict."
+        aliases: ["organizational culture", "employee engagement", "team dynamics", "workplace motivation"]
+      strategy:
+        description: "Competitive advantage, resource-based view (RBV), mergers & acquisitions (M&A), and platform ecosystems."
+        aliases: ["competitive strategy", "RBV", "M&A", "business model", "platform strategy"]
+      entrepreneurship:
+        description: "Venture capital, startup ecosystems, innovation management, and corporate entrepreneurship."
+        aliases: ["venture capital", "startup", "innovation management", "business incubation"]
+      supply-chain:
+        description: "Logistics optimization, procurement, inventory theory, supply chain resilience, and operations."
+        aliases: ["operations management", "logistics", "inventory", "procurement", "supply chain resilience"]
+
+  system:
+    description: "Physical, biological, social, or computational entity under primary study."
+    kind: semantic
+    classifier_eligible: true
+    max_tags: 3
+    values:
+      corporations-and-enterprises:
+        description: "Publicly traded firms, multinational corporations (MNCs), and SMEs."
+        aliases: ["corporation", "firm", "MNC", "SME", "enterprise"]
+      financial-markets:
+        description: "Stock exchanges, bond markets, derivatives markets, and cryptocurrency networks."
+        aliases: ["stock market", "bond market", "derivatives", "crypto"]
+      supply-networks:
+        description: "Global freight corridors, multi-tier supplier networks, and distribution hubs."
+        aliases: ["supplier network", "freight corridor", "distribution hub"]
+      organisational-workforces:
+        description: "Executive boards, management teams, knowledge workers, and frontline staff."
+        aliases: ["workforce", "board of directors", "management team"]
+
+  method:
+    description: "Investigative, computational, analytical, or experimental techniques applied."
+    kind: semantic
+    classifier_eligible: true
+    max_tags: 3
+    values:
+      financial-econometrics:
+        description: "Fama-MacBeth regressions, event studies, panel regressions, and GARCH volatility models."
+        aliases: ["event study", "fama macbeth", "GARCH", "portfolio sort"]
+      structural-equation-modeling:
+        description: "PLS-SEM, covariance-based SEM, factor analysis, and mediation/moderation analysis."
+        aliases: ["SEM", "PLS-SEM", "mediation analysis", "survey analysis"]
+      case-study-research:
+        description: "Qualitative multiple-case studies, process tracing, and inductive theory building."
+        aliases: ["case study", "multiple case", "inductive research", "grounded theory"]
+      operations-optimization:
+        description: "Linear/integer programming, queueing models, discrete-event simulation, and heuristics."
+        aliases: ["discrete event simulation", "queueing theory", "integer programming"]
+      experimental-consumer-studies:
+        description: "Laboratory consumer experiments, conjoint analysis, and online A/B testing."
+        aliases: ["conjoint analysis", "consumer experiment", "A/B test"]

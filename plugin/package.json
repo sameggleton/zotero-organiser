@@ -1,0 +1,25 @@
+{
+  "name": "zotero-organiser-plugin",
+  "version": "1.0.0",
+  "description": "Conservative, taxonomy-based automatic tag organiser for Zotero 10+",
+  "author": "Sam Eggleton",
+  "license": "AGPL-3.0-or-later",
+  "type": "module",
+  "scripts": {
+    "build": "node build.js",
+    "watch": "node build.js --watch",
+    "test": "vitest run",
+    "package": "node build.js --package"
+  },
+  "dependencies": {
+    "yaml": "^2.7.0",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.5",
+    "adm-zip": "^0.6.0",
+    "esbuild": "^0.25.0",
+    "typescript": "^5.7.3",
+    "vitest": "^3.0.7"
+  }
+}

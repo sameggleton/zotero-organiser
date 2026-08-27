@@ -1,0 +1,321 @@
+/**
+ * Zotero Taxonomy Organiser - Preferences & Manager Stylesheet
+ * Native Zotero / Firefox design system tokens for compact ~560x500px viewports.
+ * Single-column fluid layout with accessible contrast and native dark mode.
+ */
+
+:root,
+.zo-theme-light {
+  /* Surface & Background */
+  --zo-bg: #ffffff;
+  --zo-surface: #f8fafc;
+  --zo-surface-alt: #f1f5f9;
+  --zo-bg-card: #ffffff;
+  --zo-bg-card-hover: #f8fafc;
+  --zo-bg-card-selected: #eff6ff;
+
+  /* Text & Typography */
+  --zo-text-primary: #0f172a;
+  --zo-text-secondary: #475569;
+  --zo-text-muted: #64748b;
+  --zo-text-dim: #94a3b8;
+  --zo-text-main: #0f172a;
+
+  /* Borders & Dividers */
+  --zo-border: #e2e8f0;
+  --zo-border-strong: #cbd5e1;
+  --zo-border-selected: #93c5fd;
+
+  /* Native System / Palette Accent */
+  --zo-accent: #2563eb;
+  --zo-accent-hover: #1d4ed8;
+  --zo-accent-active: #1e40af;
+  --zo-accent-subtle: #eff6ff;
+  --zo-accent-text: #1d4ed8;
+  --zo-primary: #2563eb;
+  --zo-primary-hover: #1d4ed8;
+  --zo-primary-subtle: #eff6ff;
+  --zo-primary-text: #1d4ed8;
+
+  /* Badges & Pills */
+  --zo-badge-bg: #f1f5f9;
+  --zo-badge-text: #475569;
+  --zo-badge-border: #e2e8f0;
+
+  /* Feedback & Validation States */
+  --zo-success-bg: #f0fdf4;
+  --zo-success-border: #bbf7d0;
+  --zo-success-text: #15803d;
+  --zo-warning-bg: #fffbeb;
+  --zo-warning-border: #fde68a;
+  --zo-warning-text: #b45309;
+  --zo-error-bg: #fef2f2;
+  --zo-error-border: #fecaca;
+  --zo-error-text: #b91c1c;
+
+  /* Code & Editor */
+  --zo-editor-bg: #ffffff;
+  --zo-editor-text: #0f172a;
+
+  /* Elevation */
+  --zo-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root,
+  .zo-theme-dark {
+    /* Surface & Background */
+    --zo-bg: #18181b;
+    --zo-surface: #27272a;
+    --zo-surface-alt: #3f3f46;
+    --zo-bg-card: #27272a;
+    --zo-bg-card-hover: #323238;
+    --zo-bg-card-selected: #1e293b;
+
+    /* Text & Typography */
+    --zo-text-primary: #f4f4f5;
+    --zo-text-secondary: #a1a1aa;
+    --zo-text-muted: #71717a;
+    --zo-text-dim: #52525b;
+    --zo-text-main: #f4f4f5;
+
+    /* Borders & Dividers */
+    --zo-border: #3f3f46;
+    --zo-border-strong: #52525b;
+    --zo-border-selected: #60a5fa;
+
+    /* Native System / Palette Accent */
+    --zo-accent: #3b82f6;
+    --zo-accent-hover: #60a5fa;
+    --zo-accent-active: #93c5fd;
+    --zo-accent-subtle: #1e293b;
+    --zo-accent-text: #93c5fd;
+    --zo-primary: #3b82f6;
+    --zo-primary-hover: #60a5fa;
+    --zo-primary-subtle: #1e293b;
+    --zo-primary-text: #93c5fd;
+
+    /* Badges & Pills */
+    --zo-badge-bg: #3f3f46;
+    --zo-badge-text: #d4d4d8;
+    --zo-badge-border: #52525b;
+
+    /* Feedback & Validation States */
+    --zo-success-bg: #064e3b;
+    --zo-success-border: #059669;
+    --zo-success-text: #6ee7b7;
+    --zo-warning-bg: #451a03;
+    --zo-warning-border: #d97706;
+    --zo-warning-text: #fcd34d;
+    --zo-error-bg: #450a0a;
+    --zo-error-border: #dc2626;
+    --zo-error-text: #fca5a5;
+
+    /* Code & Editor */
+    --zo-editor-bg: #18181b;
+    --zo-editor-text: #f4f4f5;
+
+    /* Elevation */
+    --zo-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.4);
+  }
+}
+
+/* Root Layout Container */
+.zo-root {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-height: 480px;
+  max-width: 100%;
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: var(--zo-text-primary);
+  background-color: var(--zo-bg);
+  overflow: hidden;
+}
+
+/* Focus and Interaction */
+.zo-root *:focus-visible {
+  outline: 2px solid var(--zo-accent) !important;
+  outline-offset: 1px !important;
+}
+
+/* Text Wrapping & Clamping */
+.zo-wrap {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  box-sizing: border-box;
+}
+
+.zo-line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Buttons */
+.zo-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 5px 12px;
+  border-radius: 4px;
+  border: 1px solid var(--zo-border-strong);
+  background-color: var(--zo-bg);
+  color: var(--zo-text-primary);
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: background-color 0.12s ease, border-color 0.12s ease;
+  user-select: none;
+}
+
+.zo-btn:hover:not(:disabled) {
+  background-color: var(--zo-surface-alt);
+  border-color: var(--zo-border-strong);
+}
+
+.zo-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.zo-btn-primary {
+  background-color: var(--zo-accent);
+  color: #ffffff !important;
+  border: 1px solid var(--zo-accent);
+  font-weight: 600;
+}
+
+.zo-btn-primary:hover:not(:disabled) {
+  background-color: var(--zo-accent-hover);
+  border-color: var(--zo-accent-hover);
+}
+
+.zo-btn-sm {
+  font-size: 11px;
+  padding: 3px 8px;
+}
+
+/* Tab Bar */
+.zo-tab-bar {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  padding: 4px 8px;
+  background-color: var(--zo-surface-alt);
+  border-bottom: 1px solid var(--zo-border);
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.zo-tab-btn {
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 6px 4px;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--zo-text-secondary);
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.12s ease;
+  box-sizing: border-box;
+}
+
+.zo-tab-btn:hover:not(.active) {
+  color: var(--zo-text-primary);
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
+.zo-tab-btn.active {
+  background-color: var(--zo-bg);
+  color: var(--zo-accent);
+  font-weight: 600;
+  box-shadow: var(--zo-shadow-sm);
+}
+
+/* Cards & Rows */
+.zo-row-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 8px 10px;
+  border: 1px solid var(--zo-border);
+  border-radius: 6px;
+  background-color: var(--zo-bg);
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: border-color 0.12s ease, background-color 0.12s ease;
+}
+
+.zo-row-card:hover {
+  background-color: var(--zo-bg-card-hover);
+  border-color: var(--zo-border-strong);
+}
+
+.zo-row-card.selected {
+  background-color: var(--zo-bg-card-selected);
+  border-color: var(--zo-border-selected);
+}
+
+/* Dropzone */
+.zo-dropzone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 12px;
+  border: 1.5px dashed var(--zo-border-strong);
+  border-radius: 6px;
+  background-color: var(--zo-surface);
+  color: var(--zo-text-secondary);
+  font-size: 11.5px;
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: all 0.15s ease;
+}
+
+.zo-dropzone:hover,
+.zo-dropzone.drag-active {
+  border-color: var(--zo-accent);
+  background-color: var(--zo-accent-subtle);
+  color: var(--zo-accent-text);
+}
+
+/* Status Pill */
+.zo-status-pill {
+  font-size: 11px;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  background-color: var(--zo-accent-subtle);
+  color: var(--zo-accent-text);
+  border: 1px solid var(--zo-border-selected);
+  box-sizing: border-box;
+}
+
+/* Uncommitted Modified Indicator */
+.zo-dirty-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--zo-warning-text);
+}
+
+.zo-dirty-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--zo-warning-text);
+}

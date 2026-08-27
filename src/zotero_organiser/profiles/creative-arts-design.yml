@@ -1,0 +1,188 @@
+schema_version: 1
+version: "1.0.0"
+
+description: >
+  Covers visual art, music, performing arts, screen media, design practice, art theory and creative research.
+
+conventions:
+  separator: "/"
+  canonical_tag_format: "{namespace}/{value}"
+  allow_unlisted_values: false
+  prefer_precision_over_recall: true
+  avoid_metadata_duplication: true
+  metadata_fields_not_to_tag:
+    - author
+    - journal
+    - year
+    - doi
+    - publisher
+    - institution
+  notes:
+    - "Collections/folders organize projects; tags reflect intrinsic content."
+    - "Role describes contribution style (empirical, theoretical, review, method)."
+    - "Topic describes substantive domain questions, phenomena, or theories."
+    - "System describes the physical, biological, conceptual, or social entity investigated."
+    - "Method describes specific investigative techniques, protocols, or models."
+    - "Status and priority are human-managed workflow namespaces."
+
+classifier:
+  semantic_namespaces:
+    - role
+    - topic
+    - system
+    - method
+  workflow_namespaces:
+    - status
+  human_only_namespaces:
+    - priority
+  rules:
+    - "Never invent a tag not defined in this taxonomy."
+    - "Do not tag a concept merely because it is mentioned in passing."
+    - "Prefer the most specific applicable canonical tag without adding redundant synonyms."
+    - "Do not infer priority or reading status from document content."
+    - "Use aliases only for recognition and normalisation; always emit the canonical tag."
+
+relationships: []
+
+namespaces:
+
+  status:
+    description: "Reading and processing workflow state."
+    kind: workflow
+    classifier_eligible: false
+    max_tags: 1
+    mutually_exclusive: true
+    user_managed:
+      - reading
+      - read
+      - processed
+    values:
+      needs-triage:
+        description: "Item requires human review or candidate tags await confirmation."
+        aliases: ["triage", "needs review", "needs-review"]
+      to-read:
+        description: "Item has been queued into the reading list."
+        aliases: ["unread", "to read", "to_read"]
+      reading:
+        description: "Item is actively being read."
+      read:
+        description: "Item has been read and understood."
+        aliases: ["done"]
+      processed:
+        description: "Notes or knowledge have been extracted into broader research workflow."
+
+  priority:
+    description: "User judgement about importance or urgency to revisit."
+    kind: judgement
+    classifier_eligible: false
+    max_tags: 2
+    values:
+      core:
+        description: "Foundational reference essential to ongoing projects."
+        aliases: ["essential", "seminal", "must-read", "foundational"]
+      high:
+        description: "Highly relevant paper containing important results or techniques."
+        aliases: ["important", "key-reference"]
+      revisit:
+        description: "Contains specific derivations, tables, or parameters to revisit later."
+        aliases: ["bookmark", "check-later", "reference-back"]
+
+  role:
+    description: "Contribution style or epistemic purpose the work serves in the literature."
+    kind: semantic
+    classifier_eligible: true
+    max_tags: 2
+    values:
+      review:
+        description: "Synthesises an established body of literature rather than presenting only a single narrow result."
+        aliases: ["review article", "survey", "overview", "systematic review", "meta-analysis"]
+      empirical:
+        description: "Presents primary empirical data, field/laboratory observations, or experimental measurements."
+        aliases: ["experimental", "empirical study", "measurement", "observational study"]
+      theoretical:
+        description: "Develops formal analytical theory, mathematical derivations, or conceptual frameworks."
+        aliases: ["theory", "analytical model", "conceptual framework", "formal derivation"]
+      methodological:
+        description: "Introduces or evaluates a new algorithm, experimental protocol, measurement tool, or analytical workflow."
+        aliases: ["methodology", "algorithm development", "protocol", "new method"]
+      computational:
+        description: "Presents numerical simulations, scientific computing models, or computational software tools."
+        aliases: ["simulation", "in silico", "numerical study", "computational model"]
+      application:
+        description: "Applies established methodologies to investigate a specific domain target or practical case study."
+        aliases: ["case study", "applied study", "field application"]
+      commentary:
+        description: "Editorial, commentary, position paper, or perspective on field directions."
+        aliases: ["perspective", "editorial", "position paper", "opinion"]
+
+  topic:
+    description: "Substantive domain phenomena, research questions, theories, or mechanisms."
+    kind: semantic
+    classifier_eligible: true
+    max_tags: 4
+    values:
+      visual-arts:
+        description: "Painting, sculpture, printmaking, contemporary installation art, and photography."
+        aliases: ["painting", "sculpture", "installation art", "photography", "contemporary art"]
+      music:
+        description: "Music composition, musicology, performance practice, ethnomusicology, and acoustic design."
+        aliases: ["composition", "musicology", "ethnomusicology", "performance practice", "sound art"]
+      performing-arts:
+        description: "Theater, contemporary dance, choreography, acting technique, and live performance studies."
+        aliases: ["theatre", "dance", "choreography", "performance studies", "acting"]
+      film:
+        description: "Cinema studies, screenwriting, cinematography, documentary film, and film theory."
+        aliases: ["cinema", "screenwriting", "cinematography", "documentary", "film theory"]
+      design:
+        description: "Industrial design, interaction design, graphic communication, design thinking, and typography."
+        aliases: ["industrial design", "interaction design", "graphic design", "typography", "design thinking"]
+      art-history:
+        description: "Art criticism, iconography, artistic movements (Modernism, Baroque, Avant-garde), and provenance."
+        aliases: ["art criticism", "iconography", "modern art", "baroque", "avant-garde"]
+      digital-media:
+        description: "Interactive digital art, virtual reality (VR), generative art, game design, and sonic arts."
+        aliases: ["digital art", "virtual reality", "VR", "generative art", "game design", "creative coding"]
+      creative-practice:
+        description: "Practice-led research, studio methodology, creative pedagogy, and artist-researcher reflexivity."
+        aliases: ["practice-led research", "studio practice", "artistic research", "creative methodology"]
+
+  system:
+    description: "Physical, biological, social, or computational entity under primary study."
+    kind: semantic
+    classifier_eligible: true
+    max_tags: 3
+    values:
+      artworks-and-installations:
+        description: "Paintings, sculptures, gallery installations, musical scores, and cinematic releases."
+        aliases: ["artwork", "installation", "musical score", "film release"]
+      performance-venues:
+        description: "Theaters, concert halls, public art sites, and black-box studios."
+        aliases: ["theatre", "concert hall", "gallery", "studio"]
+      design-artifacts:
+        description: "Physical product prototypes, software UI interfaces, and visual identity systems."
+        aliases: ["prototype", "UI design", "visual identity"]
+      creative-technologies:
+        description: "Synthesizers, digital audio workstations (DAWs), game engines (Unity/Unreal), and 3D renderers."
+        aliases: ["DAW", "game engine", "unity", "blender", "synthesizer"]
+
+  method:
+    description: "Investigative, computational, analytical, or experimental techniques applied."
+    kind: semantic
+    classifier_eligible: true
+    max_tags: 3
+    values:
+      practice-led-research:
+        description: "Studio-based creative exploration, reflective practitioner logs, and artistic prototyping."
+        aliases: ["practice-led", "artistic research", "studio methodology"]
+      formal-aesthetic-critique:
+        description: "Formal analysis of composition, color theory, harmonic progression, and dramaturgical structure."
+        aliases: ["aesthetic analysis", "formal critique", "harmonic analysis", "dramaturgy"]
+      performance-analysis:
+        description: "Video choreography annotation, movement capture, and live performance documentation."
+        aliases: ["choreographic analysis", "movement analysis", "performance documentation"]
+      design-ethnography:
+        description: "User co-design workshops, contextual inquiry, and prototype iteration testing."
+        aliases: ["co-design", "design ethnography", "prototype testing"]
+      art-historical-provenance:
+        description: "Archival attribution, conservation material science, and exhibition history analysis."
+        aliases: ["provenance research", "attribution", "conservation analysis"]

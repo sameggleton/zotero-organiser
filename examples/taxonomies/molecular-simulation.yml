@@ -1,0 +1,597 @@
+schema_version: 1
+version: "1.0.0"
+
+description: >
+  Example research-profile taxonomy for molecular simulation and related
+  chemistry/biophysics literature. This is not the packaged default; copy it
+  with `zotero-organiser taxonomy init --from` (or `--taxonomy`) rather than
+  treating it as a general scholarly ontology. Namespaces answer distinct
+  questions about a paper. The classifier may only emit canonical values
+  listed in classifier.semantic_namespaces.
+
+conventions:
+  separator: "/"
+  canonical_tag_format: "{namespace}/{value}"
+  allow_unlisted_values: false
+  prefer_precision_over_recall: true
+  avoid_metadata_duplication: true
+  metadata_fields_not_to_tag:
+    - author
+    - journal
+    - year
+    - doi
+    - publisher
+    - institution
+  notes:
+    - "Collections/projects answer why the paper is in the library; do not duplicate project names as tags."
+    - "Topics describe what scientific question or concept the paper is about."
+    - "Systems describe what physical, chemical, biological, or material system is studied."
+    - "Methods describe how the work is performed or analysed."
+    - "Roles describe why the paper is useful in the literature."
+    - "Fields are optional broad disciplinary lenses and should not replace topic/system/method tags."
+    - "Model and software tags are optional and should be used only when substantively useful for retrieval."
+
+classifier:
+  semantic_namespaces:
+    - role
+    - topic
+    - system
+    - method
+  workflow_namespaces:
+    - status
+  human_only_namespaces:
+    - priority
+  rules:
+    - "Never invent a tag."
+    - "Do not tag a concept merely because it is mentioned."
+    - "Prefer the most specific applicable canonical tag without adding redundant near-synonyms."
+    - "A tag should normally reflect a substantive question, system, method, model, or role of the paper."
+    - "Do not infer priority from paper content."
+    - "Do not overwrite user-managed reading status."
+    - "Use aliases only for recognition/normalisation; always emit the canonical value."
+    - "Use optional namespaces sparingly."
+
+# Reviewed tag-pair semantics. These are audit metadata only for now: they do
+# not suppress, remap, or otherwise change automatic tagging.
+relationships: []
+
+namespaces:
+
+  status:
+    description: "Reading and processing workflow state."
+    kind: workflow
+    classifier_eligible: false
+    max_tags: 1
+    mutually_exclusive: true
+    user_managed:
+      - reading
+      - read
+      - processed
+    values:
+      needs-triage:
+        description: "Imported or changed item requires human review or classifier confidence was insufficient."
+        aliases: ["triage", "needs review", "needs-review"]
+      to-read:
+        description: "Paper has been accepted into the reading queue but has not been started."
+        aliases: ["unread", "to read", "to_read"]
+      reading:
+        description: "Paper is actively being read."
+      read:
+        description: "Paper has been read sufficiently to understand its main contribution."
+        aliases: ["done"]
+      processed:
+        description: "Important information has been extracted into notes or the broader knowledge workflow."
+
+  priority:
+    description: "User judgement about importance or need to revisit."
+    kind: judgement
+    classifier_eligible: false
+    max_tags: 2
+    constraints:
+      mutually_exclusive_groups:
+        - [core, high]
+    values:
+      core:
+        description: "Central literature that should be consulted when writing or making decisions in the relevant research area."
+      high:
+        description: "Especially important literature, but not part of the small core set."
+      revisit:
+        description: "Contains material the user expects to return to even if the paper is not otherwise high priority."
+
+  field:
+    description: >
+      Optional broad disciplinary lens. Use only when it materially helps distinguish
+      literature across fields; do not use it as a replacement for scientific topic tags.
+      Not listed in classifier.semantic_namespaces, so the model never emits these tags.
+    kind: semantic
+    classifier_eligible: false
+    optional: true
+    max_tags: 2
+    values:
+      chemistry:
+        description: "Work primarily situated in chemistry."
+      physics:
+        description: "Work primarily situated in physics."
+      materials-science:
+        description: "Work primarily situated in materials science."
+        aliases: ["materials", "materials science"]
+      chemical-engineering:
+        description: "Work primarily situated in chemical engineering."
+      biology:
+        description: "Work primarily situated in biological science."
+      biochemistry:
+        description: "Work primarily situated at the chemistry-biology interface."
+      biophysics:
+        description: "Work primarily situated at the physics-biology interface."
+      computer-science:
+        description: "Work primarily situated in computer science."
+      statistics:
+        description: "Work primarily situated in statistics or statistical methodology."
+      mathematics:
+        description: "Work primarily situated in mathematics or mathematical methodology."
+
+  role:
+    description: "What role the paper plays in the literature or why it is useful to return to."
+    kind: semantic
+    classifier_eligible: true
+    max_tags: 3
+    values:
+      review:
+        description: "Synthesises an existing body of literature rather than presenting only a narrow new result."
+        include: ["narrative review", "systematic review", "state-of-the-art review"]
+        exclude: ["brief background section in a primary research article"]
+      meta-analysis:
+        description: "Quantitatively combines results from multiple prior studies."
+      perspective:
+        description: "Provides an outlook, roadmap, commentary, or field-level perspective."
+      foundational:
+        description: "Historically or conceptually foundational work."
+        classifier_eligible: false
+        note: "Treat as human judgement unless explicitly approved."
+      theory:
+        description: "Develops or substantially extends theory, mathematical description, or conceptual framework."
+      method:
+        description: "Introduces or materially develops a method, algorithm, protocol, or workflow."
+      benchmark:
+        description: "Systematically compares methods, models, implementations, or datasets."
+      dataset:
+        description: "Introduces or substantially curates a reusable dataset or benchmark dataset."
+      experimental:
+        description: "Primary contribution is based substantially on experimental measurements."
+      computational:
+        description: "Primary contribution is based substantially on computation or simulation."
+      mechanistic:
+        description: "Primary value is explaining a mechanism or causal/physical interpretation."
+      application:
+        description: "Primary value is applying established methods to a substantive problem."
+      critique:
+        description: "Challenges, re-evaluates, or identifies limitations in an established result, interpretation, or method."
+      protocol:
+        description: "Provides a reproducible experimental or computational protocol intended for direct reuse."
+
+  topic:
+    description: "Scientific concepts, questions, mechanisms, or problems addressed by the paper."
+    kind: semantic
+    classifier_eligible: true
+    max_tags: 5
+    values:
+
+      electrostatics:
+        description: "Electrostatic interactions or electrostatic theory are a substantive subject of the work."
+        exclude: ["electrostatics used only as routine simulation machinery"]
+      screening:
+        description: "Ionic/electrostatic screening, screening lengths, or decay of charge correlations/effective interactions."
+        aliases: ["electrostatic screening", "ionic screening", "charge screening", "screening length"]
+      underscreening:
+        description: "Anomalously long-ranged or non-classical screening in concentrated ionic systems."
+        aliases: ["anomalous underscreening", "long-range screening"]
+        include: ["screening lengths exceeding simple Debye expectations"]
+        exclude: ["generic non-Debye behaviour without a long-range screening claim"]
+      ion-correlations:
+        description: "Collective or pair correlations between ionic species are central to the scientific question."
+        aliases: ["ionic correlations", "charge correlations"]
+      ion-pairing:
+        description: "Formation, structure, thermodynamics, or consequences of ion pairs."
+        aliases: ["ion pairs", "contact ion pair", "solvent-shared ion pair"]
+      ion-clustering:
+        description: "Formation, structure, topology, or dynamics of multi-ion aggregates or clusters."
+        aliases: ["ionic clustering", "ion aggregation"]
+      dielectric-response:
+        description: "Dielectric response, permittivity, dielectric relaxation, or related polarization response."
+      polarization:
+        description: "Electronic or molecular polarization is itself a substantive scientific question."
+        exclude: ["paper merely uses a polarizable model without analysing polarization"]
+      long-range-interactions:
+        description: "Long-ranged interactions or their treatment/physical consequences are a central subject."
+      finite-size-effects:
+        description: "Finite simulation/system size materially affects observables, interpretation, or convergence."
+      force-fields:
+        description: "Force-field accuracy, construction, transferability, or limitations are a substantive subject."
+      simulation-algorithms:
+        description: "Algorithms or numerical methods for molecular simulation are a substantive subject."
+      numerical-accuracy:
+        description: "Accuracy, stability, convergence, discretisation, or error control of numerical methods is central."
+      performance-optimization:
+        description: "Computational performance, scaling, profiling, or algorithmic optimisation is a primary subject."
+      gpu-computing:
+        description: "GPU architecture, kernels, acceleration, or GPU-specific performance is scientifically/technically central."
+
+      solvation:
+        description: "Solvation structure, thermodynamics, energetics, or dynamics."
+      hydration:
+        description: "Water-specific solvation structure, hydration thermodynamics, or hydration dynamics."
+      coordination:
+        description: "Local coordination environments, coordination numbers, or coordination chemistry."
+        aliases: ["coordination chemistry", "coordination structure"]
+      speciation:
+        description: "Chemical or ionic speciation, populations of distinct complexes, or equilibria between species."
+      adsorption:
+        description: "Adsorption to surfaces/interfaces or adsorption thermodynamics/kinetics."
+      interfacial-structure:
+        description: "Molecular or ionic organisation specifically at an interface."
+      self-assembly:
+        description: "Spontaneous organisation into aggregates, supramolecular structures, or ordered assemblies."
+      phase-behaviour:
+        description: "Phase transitions, phase diagrams, coexistence, or phase stability."
+        aliases: ["phase behavior"]
+
+      transport:
+        description: "Molecular, ionic, or collective transport is a substantive question."
+      diffusion:
+        description: "Diffusion coefficients, diffusion mechanisms, or diffusive dynamics are central."
+      conductivity:
+        description: "Electrical/ionic conductivity or charge transport is central."
+      residence-time:
+        description: "Residence, exchange, binding/unbinding times, or persistence of local environments."
+        aliases: ["residence time", "exchange dynamics"]
+      kinetics:
+        description: "Rates, kinetic mechanisms, or time-dependent transitions are substantive."
+      dynamic-heterogeneity:
+        description: "Spatial or temporal heterogeneity in dynamics is central."
+      collective-dynamics:
+        description: "Collective dynamical modes or correlated motion are central."
+
+      thermodynamics:
+        description: "Thermodynamic state functions, equilibria, or thermodynamic interpretation are central."
+      free-energy:
+        description: "Free-energy surfaces, profiles, differences, or free-energy-based interpretation."
+        aliases: ["free energy", "potential of mean force", "PMF"]
+      binding-affinity:
+        description: "Quantitative or comparative binding affinity is central."
+      selectivity:
+        description: "Preferential binding, partitioning, extraction, recognition, or discrimination between species."
+      molecular-recognition:
+        description: "Specific molecular recognition, host-guest recognition, or chemically selective association."
+      partitioning:
+        description: "Partitioning of species between phases, environments, or compartments."
+      extraction:
+        description: "Chemical extraction, separation, or recovery of a target species is a central problem."
+
+      polymer-conformation:
+        description: "Polymer conformational behaviour, size, shape, or chain statistics are central."
+      peptide-structure:
+        description: "Peptide/polypeptide conformations, secondary structure, folding, or structural ensembles."
+      protein-structure:
+        description: "Protein structure, folding, conformational states, or structural dynamics."
+      sequence-structure:
+        description: "Relationship between sequence and molecular structure/conformation."
+      sequence-function:
+        description: "Relationship between sequence and functional behaviour such as binding or selectivity."
+      structure-property:
+        description: "Relationship between molecular/material structure and measurable properties."
+      structure-function:
+        description: "Relationship between structure and biological/chemical function."
+
+      machine-learning:
+        description: "Machine learning itself is a substantive scientific or methodological subject."
+        exclude: ["ML used only as a minor black-box analysis step"]
+      representation-learning:
+        description: "Learned representations/embeddings are central to the work."
+      active-learning:
+        description: "Iterative model-guided acquisition or simulation/experiment selection is central."
+      transfer-learning:
+        description: "Transfer of learned representations/parameters between tasks or domains is central."
+      uncertainty-quantification:
+        description: "Predictive, epistemic, aleatoric, or model uncertainty is a central question."
+        aliases: ["UQ", "uncertainty estimation"]
+      inverse-design:
+        description: "Designing molecules/materials/sequences to satisfy target properties is central."
+      surrogate-modeling:
+        description: "A learned or reduced surrogate replaces or accelerates a more expensive model."
+      interpretability:
+        description: "Interpretability, explainability, attribution, or understanding learned model behaviour is central."
+
+  system:
+    description: "Physical, chemical, biological, or material systems substantively studied."
+    kind: semantic
+    classifier_eligible: true
+    max_tags: 5
+    values:
+
+      water:
+        description: "Water itself is a substantive system component or subject."
+      aqueous-solution:
+        description: "A solution with water as the principal solvent."
+      electrolyte:
+        description: "An ionic/electrolyte solution or material."
+      aqueous-electrolyte:
+        description: "An electrolyte whose principal solvent is water."
+      concentrated-electrolyte:
+        description: "A concentrated, highly concentrated, or superconcentrated electrolyte regime."
+        include: ["high molality", "water-in-salt-like concentrated regimes when applicable"]
+      dilute-electrolyte:
+        description: "A dilute electrolyte regime is central to the work."
+      polymer-electrolyte:
+        description: "An electrolyte where a polymer is a central structural or solvating component."
+      ionic-liquid:
+        description: "An ionic liquid or ionic-liquid-containing system."
+      deep-eutectic-solvent:
+        description: "A deep eutectic solvent system."
+
+      polymer:
+        description: "A polymer or macromolecular chain is a substantive system component."
+      polyelectrolyte:
+        description: "A polymer bearing ionisable or charged groups is central."
+      peptide:
+        description: "A peptide is a substantive system component."
+      polypeptide:
+        description: "A longer peptide/polypeptide chain is a substantive system component."
+      protein:
+        description: "A protein is a substantive system component."
+      biomolecule:
+        description: "A biomolecular system not better captured by a more specific defined tag."
+
+      lanthanide:
+        description: "One or more lanthanide elements/ions are substantive system components."
+        aliases: ["Ln", "lanthanides"]
+      rare-earth:
+        description: "Rare-earth elements/ions, including lanthanides where discussed as a broader class."
+        aliases: ["REE", "rare earth element", "rare earth elements"]
+      metal-ion:
+        description: "Metal ions are central but no more specific system tag captures the paper."
+      multivalent-ion:
+        description: "Multivalent ionic species are central."
+      ion:
+        description: "Ions are central but the system is not appropriately represented as an electrolyte."
+
+      interface:
+        description: "An interface is a substantive part of the physical system."
+      solid-liquid-interface:
+        description: "A solid-liquid interface is central."
+      mineral:
+        description: "A mineral phase or mineral surface is central."
+      surface:
+        description: "A surface is central but is not better described by a more specific system tag."
+      electrode:
+        description: "An electrode/electrolyte or electrochemical electrode system is central."
+      membrane:
+        description: "A membrane or membrane interface is central."
+
+      organic-molecule:
+        description: "A small organic molecule is the central studied system and no more specific tag applies."
+      solvent:
+        description: "Solvent identity/behaviour is central but no more specific solvent tag applies."
+
+  method:
+    description: "Substantive experimental, computational, analytical, or statistical methods used by the work."
+    kind: semantic
+    classifier_eligible: true
+    max_tags: 5
+    rule: >
+      Tag methods that are important to why the paper is useful or to understanding
+      its conclusions. Do not tag every routine analysis appearing in a figure.
+    values:
+
+      molecular-dynamics:
+        description: "Classical molecular dynamics is a substantive method."
+        aliases: ["MD", "molecular dynamics"]
+      ab-initio-molecular-dynamics:
+        description: "First-principles/ab initio molecular dynamics is substantive."
+        aliases: ["AIMD", "ab initio MD"]
+      monte-carlo:
+        description: "Monte Carlo simulation/sampling is substantive."
+        aliases: ["MC", "Monte Carlo"]
+      DFT:
+        description: "Density functional theory is a substantive method."
+        aliases: ["dft", "density functional theory"]
+      quantum-chemistry:
+        description: "Wavefunction-based or general quantum-chemical calculations are substantive."
+      electronic-structure:
+        description: "Electronic-structure calculations are central and not better described by a more specific tag."
+      enhanced-sampling:
+        description: "Enhanced-sampling methods are a substantive part of the work."
+      metadynamics:
+        description: "Metadynamics is a substantive method."
+      umbrella-sampling:
+        description: "Umbrella sampling is a substantive method."
+      replica-exchange:
+        description: "Replica-exchange methods are substantive."
+        aliases: ["REMD", "replica exchange"]
+      free-energy-calculation:
+        description: "A computational free-energy method is a substantive technique."
+      alchemical-free-energy:
+        description: "Alchemical free-energy perturbation/TI-like calculations are substantive."
+        aliases: ["FEP", "free energy perturbation", "thermodynamic integration", "TI"]
+      coarse-grained-simulation:
+        description: "Coarse-grained simulation is a substantive method."
+      continuum-modeling:
+        description: "Continuum or field-based modelling is substantive."
+
+      Ewald:
+        description: "Ewald summation is itself a substantive method or object of comparison."
+        aliases: ["ewald", "Ewald summation"]
+      PME:
+        description: "Particle Mesh Ewald is itself substantive, compared, developed, or analysed."
+        aliases: ["pme", "particle mesh ewald"]
+      PPPM:
+        description: "Particle-particle particle-mesh electrostatics is substantive."
+        aliases: ["pppm", "P3M", "particle-particle particle-mesh"]
+      FMM:
+        description: "Fast multipole methods are substantive."
+        aliases: ["fmm", "fast multipole method"]
+
+      RDF:
+        description: "Radial distribution functions are a substantive analytical method/reference point."
+        aliases: ["rdf", "radial distribution function"]
+      structure-factor:
+        description: "Static/dynamic structure-factor analysis is substantive."
+        aliases: ["S(q)", "structure factor"]
+      correlation-function:
+        description: "Correlation-function analysis is substantive."
+      cluster-analysis:
+        description: "Structural/topological clustering or aggregate analysis is substantive."
+      residence-time-analysis:
+        description: "Residence, survival, exchange, or persistence-time analysis is substantive."
+      finite-size-analysis:
+        description: "Explicit finite-size scaling or finite-size error analysis is substantive."
+      Fourier-analysis:
+        description: "Fourier/spectral analysis is substantive."
+        aliases: ["spectral analysis"]
+
+      spectroscopy:
+        description: "Spectroscopic measurement is substantive but no more specific spectroscopy tag is needed."
+      NMR:
+        description: "Nuclear magnetic resonance spectroscopy is substantive."
+        aliases: ["nmr", "nuclear magnetic resonance"]
+      infrared-spectroscopy:
+        description: "Infrared spectroscopy is substantive."
+        aliases: ["IR", "FTIR"]
+      Raman-spectroscopy:
+        description: "Raman spectroscopy is substantive."
+        aliases: ["Raman"]
+      scattering:
+        description: "Scattering experiments/analysis are substantive but no more specific tag is needed."
+      x-ray-scattering:
+        description: "X-ray scattering/diffraction is substantive."
+        aliases: ["XRD", "SAXS", "WAXS"]
+      neutron-scattering:
+        description: "Neutron scattering is substantive."
+        aliases: ["SANS", "neutron diffraction"]
+      calorimetry:
+        description: "Calorimetric measurement is substantive."
+        aliases: ["ITC", "DSC"]
+      chromatography:
+        description: "Chromatographic separation/measurement is substantive."
+      mass-spectrometry:
+        description: "Mass spectrometry is substantive."
+        aliases: ["MS", "mass spec"]
+      microscopy:
+        description: "Microscopy is substantive but no more specific microscopy tag is needed."
+
+      machine-learning:
+        description: "Machine learning is used as a substantive method."
+      deep-learning:
+        description: "Deep neural-network methods are substantive."
+      GNN:
+        description: "Graph neural networks are substantive."
+        aliases: ["gnn", "graph neural network", "graph neural networks"]
+      transformer:
+        description: "Transformer architectures are substantive."
+      active-learning:
+        description: "Active-learning acquisition loops are used as a substantive method."
+      Bayesian-optimization:
+        description: "Bayesian optimisation is a substantive method."
+        aliases: ["bayesian optimization", "BO"]
+      regression:
+        description: "Regression modelling is a substantive statistical method."
+      classification:
+        description: "Statistical or machine-learning classification is a substantive method."
+      dimensionality-reduction:
+        description: "Dimensionality-reduction/manifold-learning methods are substantive."
+      uncertainty-quantification:
+        description: "Formal uncertainty estimation/quantification is used as a substantive method."
+
+  model:
+    description: >
+      Optional representation/model assumptions used in a study. Use only when the
+      distinction is important for retrieval, comparison, or interpretation.
+      Not listed in classifier.semantic_namespaces, so the model never emits these tags.
+    kind: semantic
+    classifier_eligible: false
+    optional: true
+    max_tags: 3
+    values:
+      atomistic:
+        description: "Atomistic molecular representation."
+      coarse-grained:
+        description: "Coarse-grained molecular representation."
+      continuum:
+        description: "Continuum representation."
+      fixed-charge:
+        description: "Non-polarizable fixed-charge force-field model."
+        aliases: ["fixed charge", "nonpolarizable", "non-polarizable"]
+      polarizable:
+        description: "Explicitly polarizable molecular model."
+      multipole:
+        description: "Permanent multipoles beyond simple point-charge electrostatics are substantive."
+      explicit-solvent:
+        description: "Solvent molecules are represented explicitly."
+      implicit-solvent:
+        description: "Solvent is represented implicitly/continuum-like."
+      reactive:
+        description: "Reactive force field or model allowing changes in bonding/chemical identity."
+      machine-learned-potential:
+        description: "Machine-learned interatomic/molecular potential is used."
+        aliases: ["ML potential", "MLIP", "neural network potential"]
+      AMOEBA:
+        description: "AMOEBA polarizable multipole force field/model."
+        aliases: ["amoeba"]
+      Drude:
+        description: "Drude oscillator polarizable model."
+        aliases: ["drude", "Drude oscillator"]
+      amber-force-field:
+        description: "AMBER-family biomolecular force field is substantively relevant."
+      charmm-force-field:
+        description: "CHARMM-family biomolecular force field is substantively relevant."
+      opls-force-field:
+        description: "OPLS-family force field is substantively relevant."
+
+  software:
+    description: >
+      Optional software implementation used, developed, benchmarked, or central to
+      reproducibility. Do not tag software merely because it appears in a methods sentence.
+      Not listed in classifier.semantic_namespaces, so the model never emits these tags.
+    kind: semantic
+    classifier_eligible: false
+    optional: true
+    max_tags: 3
+    values:
+      OpenMM:
+        description: "OpenMM is substantively used, developed, benchmarked, or discussed."
+        aliases: ["openmm"]
+      LAMMPS:
+        description: "LAMMPS is substantively used, developed, benchmarked, or discussed."
+        aliases: ["lammps"]
+      GROMACS:
+        description: "GROMACS is substantively used, developed, benchmarked, or discussed."
+        aliases: ["gromacs"]
+      Amber:
+        description: "Amber software is substantively used, developed, benchmarked, or discussed."
+        aliases: ["AMBER", "amber"]
+      NAMD:
+        description: "NAMD is substantively used, developed, benchmarked, or discussed."
+        aliases: ["namd"]
+      CP2K:
+        description: "CP2K is substantively used or discussed."
+        aliases: ["cp2k"]
+      Gaussian:
+        description: "Gaussian is substantively used or discussed."
+        aliases: ["gaussian"]
+      ORCA:
+        description: "ORCA is substantively used or discussed."
+        aliases: ["orca"]
+      Q-Chem:
+        description: "Q-Chem is substantively used or discussed."
+        aliases: ["qchem", "QChem"]
+      PyTorch:
+        description: "PyTorch is substantively used, developed, benchmarked, or discussed."
+        aliases: ["pytorch"]
+      JAX:
+        description: "JAX is substantively used, developed, benchmarked, or discussed."
+        aliases: ["jax"]
+      TensorFlow:
+        description: "TensorFlow is substantively used, developed, benchmarked, or discussed."
+        aliases: ["tensorflow"]
+      RDKit:
+        description: "RDKit is substantively used or discussed."
+        aliases: ["rdkit"]

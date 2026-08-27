@@ -1,0 +1,197 @@
+schema_version: 1
+version: "1.0.0"
+
+description: >
+  Covers pure and applied mathematics, probability, statistics, optimisation, numerical mathematics and mathematical modelling.
+
+conventions:
+  separator: "/"
+  canonical_tag_format: "{namespace}/{value}"
+  allow_unlisted_values: false
+  prefer_precision_over_recall: true
+  avoid_metadata_duplication: true
+  metadata_fields_not_to_tag:
+    - author
+    - journal
+    - year
+    - doi
+    - publisher
+    - institution
+  notes:
+    - "Collections/folders organize projects; tags reflect intrinsic content."
+    - "Role describes contribution style (empirical, theoretical, review, method)."
+    - "Topic describes substantive domain questions, phenomena, or theories."
+    - "System describes the physical, biological, conceptual, or social entity investigated."
+    - "Method describes specific investigative techniques, protocols, or models."
+    - "Status and priority are human-managed workflow namespaces."
+
+classifier:
+  semantic_namespaces:
+    - role
+    - topic
+    - system
+    - method
+  workflow_namespaces:
+    - status
+  human_only_namespaces:
+    - priority
+  rules:
+    - "Never invent a tag not defined in this taxonomy."
+    - "Do not tag a concept merely because it is mentioned in passing."
+    - "Prefer the most specific applicable canonical tag without adding redundant synonyms."
+    - "Do not infer priority or reading status from document content."
+    - "Use aliases only for recognition and normalisation; always emit the canonical tag."
+
+relationships: []
+
+namespaces:
+
+  status:
+    description: "Reading and processing workflow state."
+    kind: workflow
+    classifier_eligible: false
+    max_tags: 1
+    mutually_exclusive: true
+    user_managed:
+      - reading
+      - read
+      - processed
+    values:
+      needs-triage:
+        description: "Item requires human review or candidate tags await confirmation."
+        aliases: ["triage", "needs review", "needs-review"]
+      to-read:
+        description: "Item has been queued into the reading list."
+        aliases: ["unread", "to read", "to_read"]
+      reading:
+        description: "Item is actively being read."
+      read:
+        description: "Item has been read and understood."
+        aliases: ["done"]
+      processed:
+        description: "Notes or knowledge have been extracted into broader research workflow."
+
+  priority:
+    description: "User judgement about importance or urgency to revisit."
+    kind: judgement
+    classifier_eligible: false
+    max_tags: 2
+    values:
+      core:
+        description: "Foundational reference essential to ongoing projects."
+        aliases: ["essential", "seminal", "must-read", "foundational"]
+      high:
+        description: "Highly relevant paper containing important results or techniques."
+        aliases: ["important", "key-reference"]
+      revisit:
+        description: "Contains specific derivations, tables, or parameters to revisit later."
+        aliases: ["bookmark", "check-later", "reference-back"]
+
+  role:
+    description: "Contribution style or epistemic purpose the work serves in the literature."
+    kind: semantic
+    classifier_eligible: true
+    max_tags: 2
+    values:
+      review:
+        description: "Synthesises an established body of literature rather than presenting only a single narrow result."
+        aliases: ["review article", "survey", "overview", "systematic review", "meta-analysis"]
+      empirical:
+        description: "Presents primary empirical data, field/laboratory observations, or experimental measurements."
+        aliases: ["experimental", "empirical study", "measurement", "observational study"]
+      theoretical:
+        description: "Develops formal analytical theory, mathematical derivations, or conceptual frameworks."
+        aliases: ["theory", "analytical model", "conceptual framework", "formal derivation"]
+      methodological:
+        description: "Introduces or evaluates a new algorithm, experimental protocol, measurement tool, or analytical workflow."
+        aliases: ["methodology", "algorithm development", "protocol", "new method"]
+      computational:
+        description: "Presents numerical simulations, scientific computing models, or computational software tools."
+        aliases: ["simulation", "in silico", "numerical study", "computational model"]
+      application:
+        description: "Applies established methodologies to investigate a specific domain target or practical case study."
+        aliases: ["case study", "applied study", "field application"]
+      commentary:
+        description: "Editorial, commentary, position paper, or perspective on field directions."
+        aliases: ["perspective", "editorial", "position paper", "opinion"]
+
+  topic:
+    description: "Substantive domain phenomena, research questions, theories, or mechanisms."
+    kind: semantic
+    classifier_eligible: true
+    max_tags: 4
+    values:
+      algebra:
+        description: "Abstract algebra, group theory, ring theory, representation theory, and algebraic structures."
+        aliases: ["group theory", "ring theory", "representation theory", "lie algebra", "commutative algebra"]
+      analysis:
+        description: "Real and complex analysis, functional analysis, harmonic analysis, and partial differential equations."
+        aliases: ["functional analysis", "harmonic analysis", "complex analysis", "PDEs", "operator theory"]
+      geometry-topology:
+        description: "Differential geometry, algebraic geometry, manifold theory, and algebraic/differential topology."
+        aliases: ["differential geometry", "algebraic geometry", "topology", "riemannian geometry", "manifold"]
+      probability:
+        description: "Stochastic processes, measure theory, random matrices, martingale theory, and Markov chains."
+        aliases: ["stochastic process", "random matrices", "markov chain", "martingale", "brownian motion"]
+      statistics:
+        description: "Statistical inference, Bayesian statistics, nonparametric estimation, asymptotic theory, and experimental design."
+        aliases: ["statistical inference", "bayesian", "nonparametric", "hypothesis testing", "asymptotics"]
+      optimisation:
+        description: "Convex optimisation, non-convex programming, variational analysis, and combinatorial optimisation."
+        aliases: ["convex optimization", "linear programming", "gradient descent", "variational inequalities"]
+      numerical-methods:
+        description: "Numerical linear algebra, finite element analysis, spectral methods, and error analysis."
+        aliases: ["finite element", "numerical analysis", "spectral methods", "discretization"]
+      mathematical-modelling:
+        description: "Formulation, dynamical systems analysis, and qualitative theory of continuous/discrete models."
+        aliases: ["dynamical systems", "bifurcation theory", "compartmental model", "differential equations"]
+      number-theory-combinatorics:
+        description: "Analytic/algebraic number theory, graph theory, combinatorics, and discrete mathematics."
+        aliases: ["number theory", "graph theory", "combinatorics", "discrete mathematics"]
+
+  system:
+    description: "Physical, biological, social, or computational entity under primary study."
+    kind: semantic
+    classifier_eligible: true
+    max_tags: 3
+    values:
+      algebraic-structures:
+        description: "Groups, rings, fields, vector spaces, and category-theoretic objects."
+        aliases: ["group", "field", "ring", "category", "manifold"]
+      dynamical-systems:
+        description: "Continuous and discrete dynamical systems, ODEs, PDEs, and flow maps."
+        aliases: ["vector field", "phase space", "flow map"]
+      stochastic-models:
+        description: "Markov processes, Poisson processes, random graphs, and stochastic differential equations."
+        aliases: ["SDE", "markov model", "random graph"]
+      mathematical-networks:
+        description: "Graphs, complex networks, hypergraphs, and simplicial complexes."
+        aliases: ["graph", "network", "simplicial complex"]
+      discrete-structures:
+        description: "Partitions, lattices, matroids, polytopes, and combinatorial designs."
+        aliases: ["polytope", "lattice", "matroid"]
+
+  method:
+    description: "Investigative, computational, analytical, or experimental techniques applied."
+    kind: semantic
+    classifier_eligible: true
+    max_tags: 3
+    values:
+      rigorous-proof:
+        description: "Formal deductive mathematical proof, axiomatic derivation, and lemma verification."
+        aliases: ["mathematical proof", "theorem proof", "lemma derivation"]
+      asymptotic-analysis:
+        description: "Perturbation theory, saddle-point approximation, asymptotic expansion, and boundary layer theory."
+        aliases: ["perturbation theory", "asymptotic expansion", "WKB"]
+      numerical-simulation:
+        description: "Finite difference/element simulations, matrix solvers, and root-finding iterations."
+        aliases: ["FEM", "FDM", "numerical solver"]
+      monte-carlo-simulation:
+        description: "MCMC, Gibbs sampling, Metropolis-Hastings, and importance sampling algorithms."
+        aliases: ["MCMC", "metropolis hastings", "gibbs sampling"]
+      statistical-inference:
+        description: "Maximum likelihood estimation, generalized linear models, and bootstrap resampling."
+        aliases: ["MLE", "GLM", "bootstrap", "cross-validation"]
+      variational-methods:
+        description: "Calculus of variations, energy minimization, minimax theorems, and convex relaxation."
+        aliases: ["calculus of variations", "energy minimization", "convex relaxation"]

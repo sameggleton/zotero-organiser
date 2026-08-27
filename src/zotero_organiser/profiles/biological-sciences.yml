@@ -1,0 +1,194 @@
+schema_version: 1
+version: "1.0.0"
+
+description: >
+  Covers fundamental life sciences including molecular and cell biology, genetics, microbiology, evolution, physiology, plant biology, zoology and bioinformatics.
+
+conventions:
+  separator: "/"
+  canonical_tag_format: "{namespace}/{value}"
+  allow_unlisted_values: false
+  prefer_precision_over_recall: true
+  avoid_metadata_duplication: true
+  metadata_fields_not_to_tag:
+    - author
+    - journal
+    - year
+    - doi
+    - publisher
+    - institution
+  notes:
+    - "Collections/folders organize projects; tags reflect intrinsic content."
+    - "Role describes contribution style (empirical, theoretical, review, method)."
+    - "Topic describes substantive domain questions, phenomena, or theories."
+    - "System describes the physical, biological, conceptual, or social entity investigated."
+    - "Method describes specific investigative techniques, protocols, or models."
+    - "Status and priority are human-managed workflow namespaces."
+
+classifier:
+  semantic_namespaces:
+    - role
+    - topic
+    - system
+    - method
+  workflow_namespaces:
+    - status
+  human_only_namespaces:
+    - priority
+  rules:
+    - "Never invent a tag not defined in this taxonomy."
+    - "Do not tag a concept merely because it is mentioned in passing."
+    - "Prefer the most specific applicable canonical tag without adding redundant synonyms."
+    - "Do not infer priority or reading status from document content."
+    - "Use aliases only for recognition and normalisation; always emit the canonical tag."
+
+relationships: []
+
+namespaces:
+
+  status:
+    description: "Reading and processing workflow state."
+    kind: workflow
+    classifier_eligible: false
+    max_tags: 1
+    mutually_exclusive: true
+    user_managed:
+      - reading
+      - read
+      - processed
+    values:
+      needs-triage:
+        description: "Item requires human review or candidate tags await confirmation."
+        aliases: ["triage", "needs review", "needs-review"]
+      to-read:
+        description: "Item has been queued into the reading list."
+        aliases: ["unread", "to read", "to_read"]
+      reading:
+        description: "Item is actively being read."
+      read:
+        description: "Item has been read and understood."
+        aliases: ["done"]
+      processed:
+        description: "Notes or knowledge have been extracted into broader research workflow."
+
+  priority:
+    description: "User judgement about importance or urgency to revisit."
+    kind: judgement
+    classifier_eligible: false
+    max_tags: 2
+    values:
+      core:
+        description: "Foundational reference essential to ongoing projects."
+        aliases: ["essential", "seminal", "must-read", "foundational"]
+      high:
+        description: "Highly relevant paper containing important results or techniques."
+        aliases: ["important", "key-reference"]
+      revisit:
+        description: "Contains specific derivations, tables, or parameters to revisit later."
+        aliases: ["bookmark", "check-later", "reference-back"]
+
+  role:
+    description: "Contribution style or epistemic purpose the work serves in the literature."
+    kind: semantic
+    classifier_eligible: true
+    max_tags: 2
+    values:
+      review:
+        description: "Synthesises an established body of literature rather than presenting only a single narrow result."
+        aliases: ["review article", "survey", "overview", "systematic review", "meta-analysis"]
+      empirical:
+        description: "Presents primary empirical data, field/laboratory observations, or experimental measurements."
+        aliases: ["experimental", "empirical study", "measurement", "observational study"]
+      theoretical:
+        description: "Develops formal analytical theory, mathematical derivations, or conceptual frameworks."
+        aliases: ["theory", "analytical model", "conceptual framework", "formal derivation"]
+      methodological:
+        description: "Introduces or evaluates a new algorithm, experimental protocol, measurement tool, or analytical workflow."
+        aliases: ["methodology", "algorithm development", "protocol", "new method"]
+      computational:
+        description: "Presents numerical simulations, scientific computing models, or computational software tools."
+        aliases: ["simulation", "in silico", "numerical study", "computational model"]
+      application:
+        description: "Applies established methodologies to investigate a specific domain target or practical case study."
+        aliases: ["case study", "applied study", "field application"]
+      commentary:
+        description: "Editorial, commentary, position paper, or perspective on field directions."
+        aliases: ["perspective", "editorial", "position paper", "opinion"]
+
+  topic:
+    description: "Substantive domain phenomena, research questions, theories, or mechanisms."
+    kind: semantic
+    classifier_eligible: true
+    max_tags: 4
+    values:
+      cell-biology:
+        description: "Organelle function, membrane trafficking, cell division, cytoskeleton, and signal transduction."
+        aliases: ["cytoskeleton", "membrane trafficking", "mitosis", "signaling", "autophagy"]
+      genetics:
+        description: "Genome architecture, epigenetics, gene expression regulation, mutagenesis, and population genetics."
+        aliases: ["epigenetics", "gene regulation", "mutation", "transcriptomics", "CRISPR"]
+      microbiology:
+        description: "Bacterial physiology, virology, fungal biology, host-pathogen interactions, and microbiomes."
+        aliases: ["bacterial", "virus", "virology", "microbiome", "fungal", "pathogen"]
+      evolution:
+        description: "Phylogenetics, speciation, natural selection, adaptation, and evolutionary developmental biology."
+        aliases: ["phylogeny", "speciation", "natural selection", "adaptation", "evo-devo"]
+      physiology:
+        description: "Comparative physiology, cellular homeostasis, organ systems, and electrophysiology."
+        aliases: ["homeostasis", "organ system", "electrophysiology", "circadian"]
+      plant-biology:
+        description: "Photosynthesis, plant genetics, crop physiology, plant pathology, and phytohormone signaling."
+        aliases: ["photosynthesis", "plant pathology", "arabidopsis", "phytohormone", "chloroplast"]
+      zoology:
+        description: "Animal behavior, comparative anatomy, entomology, marine biology, and organismal biology."
+        aliases: ["animal behavior", "entomology", "marine biology", "comparative anatomy"]
+      bioinformatics:
+        description: "Sequence alignment, structural bioinformatics, phylogenomics, and multi-omics integration."
+        aliases: ["sequence alignment", "omics", "phylogenomics", "structural bioinformatics", "alphafold"]
+      structural-biology:
+        description: "Protein folding, cryo-EM structures, macromolecular complexes, and conformational dynamics."
+        aliases: ["cryo-EM", "protein structure", "crystallography", "folding"]
+
+  system:
+    description: "Physical, biological, social, or computational entity under primary study."
+    kind: semantic
+    classifier_eligible: true
+    max_tags: 3
+    values:
+      model-organisms:
+        description: "Mice, Drosophila, C. elegans, zebrafish, yeast, Arabidopsis, and E. coli."
+        aliases: ["mouse model", "drosophila", "c elegans", "zebrafish", "yeast", "arabidopsis"]
+      microbial-communities:
+        description: "Gut microbiomes, environmental biofilms, viral populations, and soil consortia."
+        aliases: ["microbiome", "biofilm", "viral population"]
+      cellular-systems:
+        description: "Stem cells, primary cultures, organoids, and immortalized cell lines."
+        aliases: ["stem cell", "organoid", "cell culture", "cell line"]
+      organismal-populations:
+        description: "Wild animal populations, plant communities, and ecological cohorts."
+        aliases: ["population", "cohort", "wild strain"]
+      macromolecular-assemblies:
+        description: "Ribosomes, proteasomes, nuclear pore complexes, and membrane complexes."
+        aliases: ["ribosome", "proteasome", "multiprotein complex"]
+
+  method:
+    description: "Investigative, computational, analytical, or experimental techniques applied."
+    kind: semantic
+    classifier_eligible: true
+    max_tags: 3
+    values:
+      next-generation-sequencing:
+        description: "RNA-seq, single-cell RNA-seq, ChIP-seq, whole-genome sequencing, and metagenomics."
+        aliases: ["RNA-seq", "scRNA-seq", "ChIP-seq", "metagenomics", "WGS"]
+      microscopy-imaging:
+        description: "Confocal fluorescence, super-resolution (STED/STORM), cryo-EM, and live-cell imaging."
+        aliases: ["confocal", "super-resolution", "cryo-EM", "fluorescence microscopy"]
+      gene-editing:
+        description: "CRISPR-Cas9, base editing, RNA interference (RNAi), and transgenesis."
+        aliases: ["CRISPR", "Cas9", "base editing", "RNAi", "knockout"]
+      biochemical-assays:
+        description: "Western blot, ELISA, enzymatic kinetics, pull-down assays, and mass spectrometry proteomics."
+        aliases: ["western blot", "ELISA", "proteomics", "co-IP", "enzyme kinetics"]
+      bioinformatic-pipelines:
+        description: "Differential expression analysis, genome assembly, phylogenetic trees, and structural modeling."
+        aliases: ["differential expression", "tree building", "alignment pipeline", "clustering"]

@@ -1,0 +1,62 @@
+zotero:
+  mode: local
+  base_url: http://127.0.0.1:23119/api
+  app_name: zotero-organiser
+attachments:
+  path: ~/Zotero/storage
+backup:
+  source: ~/Zotero/storage
+  repository: ~/.local/share/zotero-organiser/restic
+  prewrite_dir: ~/.local/share/zotero-organiser/prewrite
+  # For an external repository, set repository beneath the mount and
+  # required_mount to that mount. Restic remote repository syntax is also
+  # supported; remote repositories do not use required_mount.
+state:
+  database: ~/.local/state/zotero-organiser/state.sqlite
+# Setup and `taxonomy init` write this file. Edit it, not the packaged seed.
+# taxonomy:
+#   path: ~/.config/zotero-organiser/taxonomy.yml
+classification:
+  # Remote OpenAI-compatible API. Leave disabled unless you opt in.
+  enabled: false
+  provider: openai_compatible
+  endpoint: https://api.openai.com/v1/chat/completions
+  api_key_env: OPENAI_API_KEY
+  model: gpt-4.1-mini
+  auto_accept_threshold: 0.92
+  triage_threshold: 0.70
+ranking:
+  # NVIDIA hosts: re-run scripts/setup or set backend: fastembed-gpu.
+  enabled: true
+  mode: shortlist
+  backend: fastembed-cpu
+  model: BAAI/bge-small-en-v1.5
+  cache_dir: ~/.cache/zotero-organiser/ranker
+  dense_top_k: 24
+  lexical_top_k: 12
+  per_namespace_k: 3
+local_classifier:
+  # NVIDIA hosts: re-run scripts/setup or set device: cuda.
+  enabled: true
+  mode: primary
+  backend: transformers-nli
+  model: tasksource/ModernBERT-base-nli
+  device: auto
+  batch_size: 8
+  fallback_to_remote: false
+personalization:
+  enabled: false
+  mode: shadow
+  min_examples: 3
+  weight: 0.12
+safety:
+  write_enabled: false
+  require_backup: true
+  only_new_items: true
+  allow_tag_removal: false
+  max_items_per_cycle: 5
+daemon:
+  poll_interval_seconds: 60
+  settle_seconds: 120
+  max_attachment_wait_seconds: 1800
+  allowed_item_types: [journalArticle, conferencePaper, preprint, book, bookSection, thesis, report]

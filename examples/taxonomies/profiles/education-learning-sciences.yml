@@ -1,0 +1,188 @@
+schema_version: 1
+version: "1.0.0"
+
+description: >
+  Covers teaching, learning, curriculum, pedagogy, educational psychology, educational technology, assessment, education systems and policy.
+
+conventions:
+  separator: "/"
+  canonical_tag_format: "{namespace}/{value}"
+  allow_unlisted_values: false
+  prefer_precision_over_recall: true
+  avoid_metadata_duplication: true
+  metadata_fields_not_to_tag:
+    - author
+    - journal
+    - year
+    - doi
+    - publisher
+    - institution
+  notes:
+    - "Collections/folders organize projects; tags reflect intrinsic content."
+    - "Role describes contribution style (empirical, theoretical, review, method)."
+    - "Topic describes substantive domain questions, phenomena, or theories."
+    - "System describes the physical, biological, conceptual, or social entity investigated."
+    - "Method describes specific investigative techniques, protocols, or models."
+    - "Status and priority are human-managed workflow namespaces."
+
+classifier:
+  semantic_namespaces:
+    - role
+    - topic
+    - system
+    - method
+  workflow_namespaces:
+    - status
+  human_only_namespaces:
+    - priority
+  rules:
+    - "Never invent a tag not defined in this taxonomy."
+    - "Do not tag a concept merely because it is mentioned in passing."
+    - "Prefer the most specific applicable canonical tag without adding redundant synonyms."
+    - "Do not infer priority or reading status from document content."
+    - "Use aliases only for recognition and normalisation; always emit the canonical tag."
+
+relationships: []
+
+namespaces:
+
+  status:
+    description: "Reading and processing workflow state."
+    kind: workflow
+    classifier_eligible: false
+    max_tags: 1
+    mutually_exclusive: true
+    user_managed:
+      - reading
+      - read
+      - processed
+    values:
+      needs-triage:
+        description: "Item requires human review or candidate tags await confirmation."
+        aliases: ["triage", "needs review", "needs-review"]
+      to-read:
+        description: "Item has been queued into the reading list."
+        aliases: ["unread", "to read", "to_read"]
+      reading:
+        description: "Item is actively being read."
+      read:
+        description: "Item has been read and understood."
+        aliases: ["done"]
+      processed:
+        description: "Notes or knowledge have been extracted into broader research workflow."
+
+  priority:
+    description: "User judgement about importance or urgency to revisit."
+    kind: judgement
+    classifier_eligible: false
+    max_tags: 2
+    values:
+      core:
+        description: "Foundational reference essential to ongoing projects."
+        aliases: ["essential", "seminal", "must-read", "foundational"]
+      high:
+        description: "Highly relevant paper containing important results or techniques."
+        aliases: ["important", "key-reference"]
+      revisit:
+        description: "Contains specific derivations, tables, or parameters to revisit later."
+        aliases: ["bookmark", "check-later", "reference-back"]
+
+  role:
+    description: "Contribution style or epistemic purpose the work serves in the literature."
+    kind: semantic
+    classifier_eligible: true
+    max_tags: 2
+    values:
+      review:
+        description: "Synthesises an established body of literature rather than presenting only a single narrow result."
+        aliases: ["review article", "survey", "overview", "systematic review", "meta-analysis"]
+      empirical:
+        description: "Presents primary empirical data, field/laboratory observations, or experimental measurements."
+        aliases: ["experimental", "empirical study", "measurement", "observational study"]
+      theoretical:
+        description: "Develops formal analytical theory, mathematical derivations, or conceptual frameworks."
+        aliases: ["theory", "analytical model", "conceptual framework", "formal derivation"]
+      methodological:
+        description: "Introduces or evaluates a new algorithm, experimental protocol, measurement tool, or analytical workflow."
+        aliases: ["methodology", "algorithm development", "protocol", "new method"]
+      computational:
+        description: "Presents numerical simulations, scientific computing models, or computational software tools."
+        aliases: ["simulation", "in silico", "numerical study", "computational model"]
+      application:
+        description: "Applies established methodologies to investigate a specific domain target or practical case study."
+        aliases: ["case study", "applied study", "field application"]
+      commentary:
+        description: "Editorial, commentary, position paper, or perspective on field directions."
+        aliases: ["perspective", "editorial", "position paper", "opinion"]
+
+  topic:
+    description: "Substantive domain phenomena, research questions, theories, or mechanisms."
+    kind: semantic
+    classifier_eligible: true
+    max_tags: 4
+    values:
+      pedagogy:
+        description: "Teaching strategies, instructional design, active learning, inclusive education, and classroom practices."
+        aliases: ["instructional design", "active learning", "teaching methods", "inclusive teaching"]
+      curriculum:
+        description: "Curriculum theory, STEM education, literacy/numeracy, standards, and syllabus reform."
+        aliases: ["STEM education", "literacy", "numeracy", "curriculum reform", "syllabus"]
+      learning:
+        description: "Cognitive load theory, conceptual change, self-regulated learning, and knowledge acquisition."
+        aliases: ["cognitive load", "self-regulated learning", "conceptual change", "learning process"]
+      assessment:
+        description: "Formative/summative assessment, standardized testing, rubric design, and psychometric validation."
+        aliases: ["formative assessment", "summative assessment", "standardized testing", "rubrics"]
+      educational-technology:
+        description: "Learning analytics, online/blended learning, intelligent tutoring, AI in education, and MOOCs."
+        aliases: ["edtech", "learning analytics", "online learning", "AI in education", "intelligent tutoring"]
+      higher-education:
+        description: "University teaching, graduate employability, academic retention, and student experience."
+        aliases: ["university education", "student retention", "tertiary education", "employability"]
+      education-policy:
+        description: "School governance, education funding, teacher workforce policy, and educational equity."
+        aliases: ["school governance", "teacher policy", "education equity", "funding reform"]
+      early-childhood-and-schooling:
+        description: "Early childhood education (ECEC), primary/secondary schooling, and special education."
+        aliases: ["early childhood", "primary school", "secondary school", "special education"]
+
+  system:
+    description: "Physical, biological, social, or computational entity under primary study."
+    kind: semantic
+    classifier_eligible: true
+    max_tags: 3
+    values:
+      educational-institutions:
+        description: "Primary/secondary schools, vocational colleges, universities, and preschools."
+        aliases: ["school", "university", "college", "preschool", "classroom"]
+      student-cohorts:
+        description: "Undergraduate students, K-12 pupils, neurodiverse learners, and adult trainees."
+        aliases: ["students", "pupils", "learners", "trainees"]
+      learning-platforms:
+        description: "Learning management systems (LMS/Canvas/Moodle), adaptive tutors, and digital classrooms."
+        aliases: ["LMS", "canvas", "moodle", "digital classroom"]
+      education-systems:
+        description: "State education departments, national testing authorities, and school districts."
+        aliases: ["education ministry", "school district", "exam authority"]
+
+  method:
+    description: "Investigative, computational, analytical, or experimental techniques applied."
+    kind: semantic
+    classifier_eligible: true
+    max_tags: 3
+    values:
+      classroom-action-research:
+        description: "Teacher-researcher cycles, participatory action research, and classroom interventions."
+        aliases: ["action research", "classroom observation", "lesson study"]
+      quasi-experimental-education-trials:
+        description: "Clustered randomized trials in schools, difference-in-differences, and value-added modeling."
+        aliases: ["cluster RCT", "school trial", "value-added model"]
+      learning-analytics-data-mining:
+        description: "Clickstream analysis, log-file mining, discourse analytics, and predictive student modeling."
+        aliases: ["clickstream", "log analysis", "educational data mining"]
+      qualitative-educational-studies:
+        description: "Student/teacher interviews, classroom video coding, and educational case studies."
+        aliases: ["teacher interview", "classroom coding", "video analysis"]
+      psychometric-educational-testing:
+        description: "Item response theory (IRT), Rasch modeling, and test score reliability analysis."
+        aliases: ["IRT education", "rasch model", "test reliability"]

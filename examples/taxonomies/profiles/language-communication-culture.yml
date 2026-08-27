@@ -1,0 +1,188 @@
+schema_version: 1
+version: "1.0.0"
+
+description: >
+  Covers linguistics, language studies, communication, journalism, media, cultural studies and related research into discourse and information exchange.
+
+conventions:
+  separator: "/"
+  canonical_tag_format: "{namespace}/{value}"
+  allow_unlisted_values: false
+  prefer_precision_over_recall: true
+  avoid_metadata_duplication: true
+  metadata_fields_not_to_tag:
+    - author
+    - journal
+    - year
+    - doi
+    - publisher
+    - institution
+  notes:
+    - "Collections/folders organize projects; tags reflect intrinsic content."
+    - "Role describes contribution style (empirical, theoretical, review, method)."
+    - "Topic describes substantive domain questions, phenomena, or theories."
+    - "System describes the physical, biological, conceptual, or social entity investigated."
+    - "Method describes specific investigative techniques, protocols, or models."
+    - "Status and priority are human-managed workflow namespaces."
+
+classifier:
+  semantic_namespaces:
+    - role
+    - topic
+    - system
+    - method
+  workflow_namespaces:
+    - status
+  human_only_namespaces:
+    - priority
+  rules:
+    - "Never invent a tag not defined in this taxonomy."
+    - "Do not tag a concept merely because it is mentioned in passing."
+    - "Prefer the most specific applicable canonical tag without adding redundant synonyms."
+    - "Do not infer priority or reading status from document content."
+    - "Use aliases only for recognition and normalisation; always emit the canonical tag."
+
+relationships: []
+
+namespaces:
+
+  status:
+    description: "Reading and processing workflow state."
+    kind: workflow
+    classifier_eligible: false
+    max_tags: 1
+    mutually_exclusive: true
+    user_managed:
+      - reading
+      - read
+      - processed
+    values:
+      needs-triage:
+        description: "Item requires human review or candidate tags await confirmation."
+        aliases: ["triage", "needs review", "needs-review"]
+      to-read:
+        description: "Item has been queued into the reading list."
+        aliases: ["unread", "to read", "to_read"]
+      reading:
+        description: "Item is actively being read."
+      read:
+        description: "Item has been read and understood."
+        aliases: ["done"]
+      processed:
+        description: "Notes or knowledge have been extracted into broader research workflow."
+
+  priority:
+    description: "User judgement about importance or urgency to revisit."
+    kind: judgement
+    classifier_eligible: false
+    max_tags: 2
+    values:
+      core:
+        description: "Foundational reference essential to ongoing projects."
+        aliases: ["essential", "seminal", "must-read", "foundational"]
+      high:
+        description: "Highly relevant paper containing important results or techniques."
+        aliases: ["important", "key-reference"]
+      revisit:
+        description: "Contains specific derivations, tables, or parameters to revisit later."
+        aliases: ["bookmark", "check-later", "reference-back"]
+
+  role:
+    description: "Contribution style or epistemic purpose the work serves in the literature."
+    kind: semantic
+    classifier_eligible: true
+    max_tags: 2
+    values:
+      review:
+        description: "Synthesises an established body of literature rather than presenting only a single narrow result."
+        aliases: ["review article", "survey", "overview", "systematic review", "meta-analysis"]
+      empirical:
+        description: "Presents primary empirical data, field/laboratory observations, or experimental measurements."
+        aliases: ["experimental", "empirical study", "measurement", "observational study"]
+      theoretical:
+        description: "Develops formal analytical theory, mathematical derivations, or conceptual frameworks."
+        aliases: ["theory", "analytical model", "conceptual framework", "formal derivation"]
+      methodological:
+        description: "Introduces or evaluates a new algorithm, experimental protocol, measurement tool, or analytical workflow."
+        aliases: ["methodology", "algorithm development", "protocol", "new method"]
+      computational:
+        description: "Presents numerical simulations, scientific computing models, or computational software tools."
+        aliases: ["simulation", "in silico", "numerical study", "computational model"]
+      application:
+        description: "Applies established methodologies to investigate a specific domain target or practical case study."
+        aliases: ["case study", "applied study", "field application"]
+      commentary:
+        description: "Editorial, commentary, position paper, or perspective on field directions."
+        aliases: ["perspective", "editorial", "position paper", "opinion"]
+
+  topic:
+    description: "Substantive domain phenomena, research questions, theories, or mechanisms."
+    kind: semantic
+    classifier_eligible: true
+    max_tags: 4
+    values:
+      linguistics:
+        description: "Phonology, phonetics, syntax, semantics, pragmatics, and morphology."
+        aliases: ["syntax", "semantics", "phonetics", "phonology", "morphology", "pragmatics"]
+      language:
+        description: "Sociolinguistics, language acquisition, bilingualism, historical linguistics, and language endangerment."
+        aliases: ["sociolinguistics", "bilingualism", "language revitalization", "historical linguistics"]
+      communication:
+        description: "Interpersonal communication, organizational communication, strategic PR, and crisis messaging."
+        aliases: ["strategic communication", "interpersonal communication", "public relations", "crisis communication"]
+      media-studies:
+        description: "Broadcasting, platform media, television studies, audience reception, and political economy of media."
+        aliases: ["broadcast", "television studies", "audience reception", "media industry"]
+      journalism:
+        description: "News production, investigative journalism, digital reporting ethics, and misinformation."
+        aliases: ["news reporting", "investigative journalism", "misinformation", "journalism ethics", "fact-checking"]
+      cultural-studies:
+        description: "Popular culture, subcultures, identity politics, postcolonial cultural theory, and globalization."
+        aliases: ["popular culture", "cultural theory", "identity politics", "subcultures"]
+      discourse:
+        description: "Critical discourse analysis (CDA), multimodality, conversation analysis, and semiotics."
+        aliases: ["CDA", "semiotics", "multimodality", "conversation analysis", "discourse studies"]
+      digital-media:
+        description: "Social media algorithms, online communities, digital culture, streaming platforms, and memes."
+        aliases: ["social media", "digital culture", "algorithms media", "online community", "streaming"]
+
+  system:
+    description: "Physical, biological, social, or computational entity under primary study."
+    kind: semantic
+    classifier_eligible: true
+    max_tags: 3
+    values:
+      media-platforms-and-outlets:
+        description: "Social platforms (X/TikTok/YouTube), newsrooms, broadcasting networks, and streaming services."
+        aliases: ["social media platform", "newsroom", "broadcaster", "streaming service"]
+      linguistic-corpora:
+        description: "Spoken corpora, written text archives, phonetic recordings, and dictionary databases."
+        aliases: ["corpus", "text archive", "phonetic database"]
+      cultural-audiences:
+        description: "Online fandoms, news consumers, minority language communities, and digital publics."
+        aliases: ["fandom", "audience", "speech community", "public sphere"]
+      communication-campaigns:
+        description: "Public health messaging campaigns, political electoral campaigns, and corporate PR."
+        aliases: ["public campaign", "election campaign", "PR campaign"]
+
+  method:
+    description: "Investigative, computational, analytical, or experimental techniques applied."
+    kind: semantic
+    classifier_eligible: true
+    max_tags: 3
+    values:
+      corpus-linguistic-analysis:
+        description: "Concordance analysis, collocation extraction, n-gram frequency, and POS tagging."
+        aliases: ["corpus linguistics", "concordance", "collocation", "n-gram"]
+      conversation-and-discourse-analysis:
+        description: "Jeffersonian transcription, turn-taking analysis, and critical discourse frameworks."
+        aliases: ["conversation analysis", "discourse coding", "transcription"]
+      content-and-framing-analysis:
+        description: "Media framing analysis, quantitative news coding, and thematic media analysis."
+        aliases: ["framing analysis", "content coding", "media analysis"]
+      phonetic-acoustic-analysis:
+        description: "Formant analysis, pitch tracking (Praat), spectrographic measurement, and articulation."
+        aliases: ["praat", "formant analysis", "acoustic measurement", "spectrogram"]
+      digital-ethnography-social-media:
+        description: "Platform data scraping, network analysis of hashtags, and online participant observation."
+        aliases: ["social media scraping", "hashtag analysis", "digital ethnography"]

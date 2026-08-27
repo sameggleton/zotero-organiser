@@ -1,0 +1,188 @@
+schema_version: 1
+version: "1.0.0"
+
+description: >
+  Covers historical research, archaeology, heritage, archives, museums, material culture and historical interpretation.
+
+conventions:
+  separator: "/"
+  canonical_tag_format: "{namespace}/{value}"
+  allow_unlisted_values: false
+  prefer_precision_over_recall: true
+  avoid_metadata_duplication: true
+  metadata_fields_not_to_tag:
+    - author
+    - journal
+    - year
+    - doi
+    - publisher
+    - institution
+  notes:
+    - "Collections/folders organize projects; tags reflect intrinsic content."
+    - "Role describes contribution style (empirical, theoretical, review, method)."
+    - "Topic describes substantive domain questions, phenomena, or theories."
+    - "System describes the physical, biological, conceptual, or social entity investigated."
+    - "Method describes specific investigative techniques, protocols, or models."
+    - "Status and priority are human-managed workflow namespaces."
+
+classifier:
+  semantic_namespaces:
+    - role
+    - topic
+    - system
+    - method
+  workflow_namespaces:
+    - status
+  human_only_namespaces:
+    - priority
+  rules:
+    - "Never invent a tag not defined in this taxonomy."
+    - "Do not tag a concept merely because it is mentioned in passing."
+    - "Prefer the most specific applicable canonical tag without adding redundant synonyms."
+    - "Do not infer priority or reading status from document content."
+    - "Use aliases only for recognition and normalisation; always emit the canonical tag."
+
+relationships: []
+
+namespaces:
+
+  status:
+    description: "Reading and processing workflow state."
+    kind: workflow
+    classifier_eligible: false
+    max_tags: 1
+    mutually_exclusive: true
+    user_managed:
+      - reading
+      - read
+      - processed
+    values:
+      needs-triage:
+        description: "Item requires human review or candidate tags await confirmation."
+        aliases: ["triage", "needs review", "needs-review"]
+      to-read:
+        description: "Item has been queued into the reading list."
+        aliases: ["unread", "to read", "to_read"]
+      reading:
+        description: "Item is actively being read."
+      read:
+        description: "Item has been read and understood."
+        aliases: ["done"]
+      processed:
+        description: "Notes or knowledge have been extracted into broader research workflow."
+
+  priority:
+    description: "User judgement about importance or urgency to revisit."
+    kind: judgement
+    classifier_eligible: false
+    max_tags: 2
+    values:
+      core:
+        description: "Foundational reference essential to ongoing projects."
+        aliases: ["essential", "seminal", "must-read", "foundational"]
+      high:
+        description: "Highly relevant paper containing important results or techniques."
+        aliases: ["important", "key-reference"]
+      revisit:
+        description: "Contains specific derivations, tables, or parameters to revisit later."
+        aliases: ["bookmark", "check-later", "reference-back"]
+
+  role:
+    description: "Contribution style or epistemic purpose the work serves in the literature."
+    kind: semantic
+    classifier_eligible: true
+    max_tags: 2
+    values:
+      review:
+        description: "Synthesises an established body of literature rather than presenting only a single narrow result."
+        aliases: ["review article", "survey", "overview", "systematic review", "meta-analysis"]
+      empirical:
+        description: "Presents primary empirical data, field/laboratory observations, or experimental measurements."
+        aliases: ["experimental", "empirical study", "measurement", "observational study"]
+      theoretical:
+        description: "Develops formal analytical theory, mathematical derivations, or conceptual frameworks."
+        aliases: ["theory", "analytical model", "conceptual framework", "formal derivation"]
+      methodological:
+        description: "Introduces or evaluates a new algorithm, experimental protocol, measurement tool, or analytical workflow."
+        aliases: ["methodology", "algorithm development", "protocol", "new method"]
+      computational:
+        description: "Presents numerical simulations, scientific computing models, or computational software tools."
+        aliases: ["simulation", "in silico", "numerical study", "computational model"]
+      application:
+        description: "Applies established methodologies to investigate a specific domain target or practical case study."
+        aliases: ["case study", "applied study", "field application"]
+      commentary:
+        description: "Editorial, commentary, position paper, or perspective on field directions."
+        aliases: ["perspective", "editorial", "position paper", "opinion"]
+
+  topic:
+    description: "Substantive domain phenomena, research questions, theories, or mechanisms."
+    kind: semantic
+    classifier_eligible: true
+    max_tags: 4
+    values:
+      history:
+        description: "Ancient, medieval, early modern, modern, and contemporary history across global regions."
+        aliases: ["modern history", "ancient history", "medieval history", "social history", "political history"]
+      archaeology:
+        description: "Excavation, bioarchaeology, zooarchaeology, geoarchaeology, and prehistoric settlements."
+        aliases: ["excavation", "bioarchaeology", "zooarchaeology", "radiocarbon", "lithics", "prehistory"]
+      heritage:
+        description: "Cultural heritage management, UNESCO sites, intangible heritage, and monument conservation."
+        aliases: ["cultural heritage", "UNESCO", "monument", "conservation heritage", "intangible heritage"]
+      archives:
+        description: "Archival science, historical records management, manuscript appraisal, and provenance."
+        aliases: ["archival science", "records management", "provenance", "historical records"]
+      museum-studies:
+        description: "Curatorship, exhibition design, restitution of antiquities, and museum visitorship."
+        aliases: ["curation", "exhibition", "museums", "restitution", "museology"]
+      material-culture:
+        description: "Historical artifacts, commodities, textiles, everyday objects, and sensory history."
+        aliases: ["artifact", "everyday objects", "material culture", "sensory history"]
+      historiography:
+        description: "Historical methodology, philosophy of history, archival turns, and schools of historical thought."
+        aliases: ["historical method", "philosophy of history", "annales school", "historiographical"]
+      oral-history:
+        description: "Personal testimonies, oral narratives, survivor accounts, and community memory."
+        aliases: ["oral testimony", "life history", "memory studies", "oral history"]
+
+  system:
+    description: "Physical, biological, social, or computational entity under primary study."
+    kind: semantic
+    classifier_eligible: true
+    max_tags: 3
+    values:
+      archaeological-sites:
+        description: "Excavation trenches, burial mounds, rock shelters, ancient cities, and shipwrecks."
+        aliases: ["archaeological site", "trench", "shipwreck", "burial mound"]
+      archival-collections:
+        description: "State archives, church registries, diplomatic dispatches, and private correspondence."
+        aliases: ["state archive", "registry", "correspondence archive"]
+      historical-societies:
+        description: "Empires, dynasties, peasant communities, industrial towns, and trade guilds."
+        aliases: ["empire", "dynasty", "guild", "historical society"]
+      museum-collections:
+        description: "Antiquities galleries, specimen repositories, and memorial monuments."
+        aliases: ["museum collection", "antiquities", "monument"]
+
+  method:
+    description: "Investigative, computational, analytical, or experimental techniques applied."
+    kind: semantic
+    classifier_eligible: true
+    max_tags: 3
+    values:
+      archival-document-analysis:
+        description: "Primary source paleography, critical source criticism, and document contextualization."
+        aliases: ["primary source analysis", "paleography", "source criticism", "archival research"]
+      archaeological-excavation:
+        description: "Stratigraphic excavation, Harris matrix recording, and spatial artifact mapping."
+        aliases: ["stratigraphy", "harris matrix", "excavation", "artifact recording"]
+      radiometric-and-dating-methods:
+        description: "Carbon-14 (C14) dating, dendrochronology, thermoluminescence, and isotope sourcing."
+        aliases: ["C14 dating", "dendrochronology", "thermoluminescence", "radiometric dating"]
+      oral-history-interviewing:
+        description: "Semi-structured biographical interviews, audio transcription, and narrative analysis."
+        aliases: ["oral history interview", "narrative analysis", "biographical interview"]
+      spatial-historical-gis:
+        description: "Historical GIS mapping, aerial lidar survey for archaeology, and viewshed analysis."
+        aliases: ["historical GIS", "lidar archaeology", "viewshed analysis"]
