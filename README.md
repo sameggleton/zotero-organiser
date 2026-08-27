@@ -16,7 +16,7 @@ Available as:
 
 ## Core Features
 
-- **In-Zotero Item Pane UI**: View real-time tag confidence badges and review triage candidates (confidence 0.65–0.85) with 1-click **Accept (✓)**, **Dismiss (✗)**, or **Override** directly in Zotero.
+- **In-Zotero Item Pane UI**: View real-time tag confidence badges and review triage candidate tags with 1-click **Accept (✓)**, **Dismiss (✗)**, or **Override** directly in Zotero.
 - **Visual Taxonomy Manager**: Edit taxonomies in **Zotero Settings → Zotero Organiser** with live schema validation, line-number error jump, and drag-and-drop import/export.
 - **25 Academic Domain Profiles**: Ready-to-use profiles based on the Australian **Fields of Research (FoR)** standard (CS, Physics, Chemistry, Biology, Medicine, Economics, Humanities, etc.).
 - **Multi-Domain Combiner**: Select multiple profiles (e.g. *Computer Science* + *Psychology*) to generate a unified interdisciplinary taxonomy automatically.
