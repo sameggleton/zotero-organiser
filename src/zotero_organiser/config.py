@@ -56,6 +56,12 @@ class ClassificationConfig(BaseModel):
     auto_accept_threshold: float = Field(default=0.92, ge=0, le=1)
     triage_threshold: float = Field(default=0.70, ge=0, le=1)
 
+    @model_validator(mode="after")
+    def validate_threshold_order(self) -> "ClassificationConfig":
+        if self.triage_threshold > self.auto_accept_threshold:
+            raise ValueError("triage_threshold must not exceed auto_accept_threshold")
+        return self
+
 
 class RankingConfig(BaseModel):
     """Local candidate ranker."""

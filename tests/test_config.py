@@ -158,6 +158,17 @@ class ConfigTests(unittest.TestCase):
         self.assertFalse(config.ranking.enabled)
         self.assertFalse(config.local_classifier.enabled)
 
+    def test_triage_threshold_cannot_exceed_auto_accept_threshold(self):
+        raw = self.base_config()
+        raw["classification"] = {
+            "triage_threshold": 0.9,
+            "auto_accept_threshold": 0.8,
+        }
+        with self.assertRaisesRegex(
+            ValueError, "triage_threshold must not exceed auto_accept_threshold"
+        ):
+            Config.model_validate(raw)
+
     def test_omitted_local_classifier_model_defaults_to_large_nli(self):
         raw = self.base_config()
         raw["ranking"] = {"enabled": True}
