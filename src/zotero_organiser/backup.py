@@ -4,6 +4,7 @@ import json
 import re
 import shutil
 import subprocess
+import tempfile
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
@@ -74,8 +75,25 @@ def restic_backup(repository: str, source: Path) -> str:
 
 
 def save_prewrite(root: Path, item: dict) -> Path:
+    content = json.dumps(item, indent=2, sort_keys=True) + "\n"
     timestamp = datetime.now(UTC).strftime("%Y-%m-%dT%H-%M-%S-%fZ")
-    path = root / item["key"] / f"{timestamp}.json"
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(item, indent=2, sort_keys=True))
+    item_dir = root / item["key"]
+    root.mkdir(parents=True, exist_ok=True, mode=0o700)
+    root.chmod(0o700)
+    item_dir.mkdir(exist_ok=True, mode=0o700)
+    item_dir.chmod(0o700)
+    path = item_dir / f"{timestamp}.json"
+    temporary: Path | None = None
+    try:
+        with tempfile.NamedTemporaryFile(
+            "w", encoding="utf-8", dir=item_dir, delete=False
+        ) as handle:
+            handle.write(content)
+            temporary = Path(handle.name)
+        temporary.chmod(0o600)
+        temporary.replace(path)
+        temporary = None
+    finally:
+        if temporary is not None:
+            temporary.unlink(missing_ok=True)
     return path

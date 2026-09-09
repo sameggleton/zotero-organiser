@@ -1,12 +1,14 @@
 from __future__ import annotations
 
+import json
+import stat
 import subprocess
 import tempfile
 import unittest
 from pathlib import Path
 from unittest.mock import patch
 
-from zotero_organiser.backup import repository_status
+from zotero_organiser.backup import repository_status, save_prewrite
 from zotero_organiser.config import BackupConfig
 
 
@@ -71,6 +73,19 @@ class BackupTests(unittest.TestCase):
         status = repository_status(self.config())
         self.assertFalse(status.available)
         self.assertEqual(status.detail, "repository does not exist")
+
+    def test_prewrite_snapshot_is_owner_only(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / "prewrite"
+            path = save_prewrite(root, {"key": "ABCD1234", "data": {"title": "Paper"}})
+
+            self.assertEqual(
+                json.loads(path.read_text()), {"key": "ABCD1234", "data": {"title": "Paper"}}
+            )
+            self.assertEqual(stat.S_IMODE(root.stat().st_mode), 0o700)
+            self.assertEqual(stat.S_IMODE(path.parent.stat().st_mode), 0o700)
+            self.assertEqual(stat.S_IMODE(path.stat().st_mode), 0o600)
+            self.assertEqual(list(path.parent.iterdir()), [path])
 
 
 if __name__ == "__main__":
