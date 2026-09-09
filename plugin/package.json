@@ -1,6 +1,6 @@
 {
   "name": "zotero-organiser-plugin",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Conservative, taxonomy-based automatic tag organiser for Zotero 10+",
   "author": "Sam Eggleton",
   "license": "AGPL-3.0-or-later",

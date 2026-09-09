@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Zotero Organiser",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Conservative, taxonomy-based automatic tag organiser for Zotero 10+",
   "author": "Sam Eggleton",
   "applications": {

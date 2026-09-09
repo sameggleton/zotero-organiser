@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-09-09
+
+### Fixed
+
+- Reject classification settings where `triage_threshold` exceeds `auto_accept_threshold`.
+- Preserve an empty candidate shortlist instead of sending the full taxonomy to the remote classifier.
+- Write pre-write recovery snapshots atomically with owner-only file and directory permissions.
+- Use the Organiser name consistently in the Zotero preferences pane.
+
+### Changed
+
+- Tightened the README around core features and installation.
+
+## [1.0.0] - 2026-08-27
+
 ### Added
 
 - **Native Zotero 10+ Plugin (`.xpi`)**:

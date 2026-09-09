@@ -1,7 +1,7 @@
 # zotero-organiser
 
 [![CI Status](https://github.com/sameggleton/zotero-organiser/actions/workflows/ci.yml/badge.svg)](https://github.com/sameggleton/zotero-organiser/actions)
-[![Release: v1.0.0](https://img.shields.io/badge/release-v1.0.0-purple.svg)](https://github.com/sameggleton/zotero-organiser/releases/tag/v1.0.0)
+[![Release: v1.0.1](https://img.shields.io/badge/release-v1.0.1-purple.svg)](https://github.com/sameggleton/zotero-organiser/releases/tag/v1.0.1)
 [![License: AGPL-3.0](https://img.shields.io/badge/license-AGPL--3.0-blue.svg)](LICENSE)
 [![Zotero 10+](https://img.shields.io/badge/zotero-10+-purple.svg)](https://www.zotero.org)
 [![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/downloads/)
