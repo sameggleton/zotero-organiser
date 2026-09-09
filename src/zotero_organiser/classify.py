@@ -143,10 +143,12 @@ class Classifier:
                         return self._local_classification(local_scores)
         if not self.config.enabled:
             return Classification(tags=[])
+        if allowed_tags is not None and not allowed_tags:
+            return Classification(tags=[])
         api_key = os.environ.get(self.config.api_key_env)
         if not api_key:
             raise RuntimeError(f"missing classifier API key in {self.config.api_key_env}")
-        candidate_tags = allowed_tags or self.taxonomy.classifier_tags()
+        candidate_tags = self.taxonomy.classifier_tags() if allowed_tags is None else allowed_tags
         schema = {
             "name": "zotero_tags",
             "strict": True,

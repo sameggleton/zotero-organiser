@@ -108,6 +108,22 @@ class ClassifierTests(unittest.TestCase):
         )
 
     @patch("zotero_organiser.classify.httpx.post")
+    def test_empty_shortlist_does_not_fall_back_to_full_taxonomy(self, post):
+        taxonomy = MagicMock()
+        taxonomy.classifier.rules = []
+        taxonomy.classifier_tags.return_value = {"topic/screening"}
+        ranker = MagicMock()
+        ranker.config.mode = "shortlist"
+        ranker.rank.return_value = Ranking(())
+        item = {"key": "ABC", "data": {"title": "", "tags": [], "collections": []}}
+
+        result = Classifier(ClassificationConfig(enabled=True), taxonomy, ranker).classify(item)
+
+        self.assertEqual(result.tags, [])
+        post.assert_not_called()
+        taxonomy.prompt_definitions.assert_not_called()
+
+    @patch("zotero_organiser.classify.httpx.post")
     def test_unavailable_ranker_falls_back_to_full_taxonomy(self, post):
         post.return_value = httpx.Response(
             200, json={"choices": [{"message": {"content": '{"tags": []}'}}]}
