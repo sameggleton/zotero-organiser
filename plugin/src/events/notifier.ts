@@ -6,6 +6,17 @@ import { ClassifierEngine } from '../classifier/engine.js';
 import { Taxonomy } from '../core/taxonomy.js';
 import { StatusTagService } from './statusTag.js';
 
+/**
+ * Zotero runs bootstrap plugins in a sandbox with setTimeout and no window.
+ * Prefer a window timer when one exists, and otherwise use the sandbox global.
+ */
+function defer(callback: () => void, delayMs: number): number {
+  if (typeof window !== 'undefined' && typeof window.setTimeout === 'function') {
+    return window.setTimeout(callback, delayMs);
+  }
+  return setTimeout(callback, delayMs);
+}
+
 export interface NotifierOptions {
   writeEnabled: boolean;
   onlyNewItems: boolean;
@@ -141,7 +152,10 @@ export class OrganiserNotifier {
 
   private async applyStatusTag(item: Zotero.Item): Promise<void> {
     try {
-      await this.statusTagService.applyToItem(item);
+      const result = await this.statusTagService.applyToItem(item);
+      if (result !== 'applied' && typeof Zotero !== 'undefined' && Zotero.log) {
+        Zotero.log(`[zotero-organiser] status tag for ${item.key}: ${result}`);
+      }
     } catch (err: any) {
       if (typeof Zotero !== 'undefined' && Zotero.log) {
         Zotero.log(`[zotero-organiser] failed to apply status tag to ${item.key}: ${err}`);
@@ -155,7 +169,7 @@ export class OrganiserNotifier {
       clearTimeout(this.settleTimeouts.get(key));
     }
 
-    const timeout = window.setTimeout(async () => {
+    const timeout = defer(async () => {
       this.settleTimeouts.delete(key);
       const applyStatus = this.pendingStatusItems.delete(key);
       try {

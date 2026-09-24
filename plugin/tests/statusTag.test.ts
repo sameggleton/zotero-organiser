@@ -291,6 +291,37 @@ describe('OrganiserNotifier status tag wiring', () => {
     });
   }
 
+  it('settles a new item when the plugin sandbox has no window', async () => {
+    vi.stubGlobal('window', undefined);
+    const sandboxTimers = new Map<number, () => Promise<void> | void>();
+    let sandboxTimerId = 1;
+    vi.stubGlobal('setTimeout', (fn: () => Promise<void> | void) => {
+      const id = sandboxTimerId++;
+      sandboxTimers.set(id, fn);
+      return id;
+    });
+    vi.stubGlobal('clearTimeout', (id: number) => {
+      sandboxTimers.delete(id);
+    });
+
+    const stateStore = new StateStore();
+    const notifier = createNotifier(stateStore);
+    notifierItem = createFakeItem({ id: 1 });
+
+    await (notifier as any).handleNotification('add', 'item', [1], {});
+    expect(notifierItem.addedTags).toEqual([]);
+    expect(sandboxTimers.size).toBe(1);
+
+    const jobs = [...sandboxTimers.values()];
+    sandboxTimers.clear();
+    for (const job of jobs) {
+      await job();
+    }
+
+    expect(notifierItem.addedTags).toEqual(['status/to-read']);
+    expect((await stateStore.getItem(notifierItem.key))?.statusTag).toBe('status/to-read');
+  });
+
   it('applies the status tag after settle on add, and not on modify', async () => {
     const stateStore = new StateStore();
     const notifier = createNotifier(stateStore);
