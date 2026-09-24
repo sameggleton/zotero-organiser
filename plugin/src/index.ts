@@ -3,6 +3,7 @@ import { StateStore } from './core/state.js';
 import { parseTaxonomy, Taxonomy } from './core/taxonomy.js';
 import { DEFAULT_TAXONOMY_YAML } from './defaultTaxonomy.js';
 import { OrganiserNotifier } from './events/notifier.js';
+import { DEFAULT_STATUS_TAG } from './events/statusTag.js';
 import { ContextMenuUI } from './ui/contextMenu.js';
 import { ItemPaneUI } from './ui/itemPane.js';
 import { PreferencesUI } from './ui/preferences.js';
@@ -51,6 +52,14 @@ export class ZoteroOrganiser {
       typeof Zotero !== 'undefined' && Zotero.Prefs
         ? Zotero.Prefs.get('extensions.zotero-organiser.triageThreshold') ?? 0.65
         : 0.65;
+    const statusTagEnabled =
+      typeof Zotero !== 'undefined' && Zotero.Prefs
+        ? Zotero.Prefs.get('extensions.zotero-organiser.statusTagEnabled') ?? true
+        : true;
+    const statusTagName =
+      typeof Zotero !== 'undefined' && Zotero.Prefs
+        ? Zotero.Prefs.get('extensions.zotero-organiser.statusTagName') ?? DEFAULT_STATUS_TAG
+        : DEFAULT_STATUS_TAG;
 
     this.classifier = new ClassifierEngine(this.taxonomy, {
       mode: 'local',
@@ -67,6 +76,8 @@ export class ZoteroOrganiser {
       autoThreshold,
       triageThreshold,
       settleMs: 3000,
+      statusTagEnabled,
+      statusTagName,
     });
   }
 

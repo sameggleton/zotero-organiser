@@ -4,6 +4,21 @@ import { reconcile } from '../core/reconcile.js';
 import { ItemRecord, StateStore } from '../core/state.js';
 import { ClassifierEngine } from '../classifier/engine.js';
 import { Taxonomy } from '../core/taxonomy.js';
+import { StatusTagService } from './statusTag.js';
+
+/**
+ * Zotero runs bootstrap plugins in a sandbox with setTimeout and no window.
+ * Prefer a window timer when one exists, and otherwise use the sandbox global.
+ * Node's types return Timeout from setTimeout; the browser returns a number.
+ */
+type TimerHandle = ReturnType<typeof setTimeout>;
+
+function defer(callback: () => void, delayMs: number): TimerHandle {
+  if (typeof window !== 'undefined' && typeof window.setTimeout === 'function') {
+    return window.setTimeout(callback, delayMs) as unknown as TimerHandle;
+  }
+  return setTimeout(callback, delayMs);
+}
 
 export interface NotifierOptions {
   writeEnabled: boolean;
@@ -12,6 +27,8 @@ export interface NotifierOptions {
   autoThreshold: number;
   triageThreshold: number;
   settleMs: number;
+  statusTagEnabled: boolean;
+  statusTagName: string;
 }
 
 export class OrganiserNotifier {
@@ -20,7 +37,9 @@ export class OrganiserNotifier {
   private classifier: ClassifierEngine;
   private taxonomy: Taxonomy;
   private options: NotifierOptions;
-  private settleTimeouts = new Map<string, number>();
+  private statusTagService: StatusTagService;
+  private settleTimeouts = new Map<string, TimerHandle>();
+  private pendingStatusItems = new Set<string>();
 
   constructor(
     stateStore: StateStore,
@@ -32,6 +51,15 @@ export class OrganiserNotifier {
     this.classifier = classifier;
     this.taxonomy = taxonomy;
     this.options = options;
+    this.statusTagService = new StatusTagService(
+      stateStore,
+      {
+        statusTagEnabled: options.statusTagEnabled,
+        statusTagName: options.statusTagName,
+        writeEnabled: options.writeEnabled,
+      },
+      taxonomy
+    );
   }
 
   public getTaxonomy(): Taxonomy {
@@ -40,6 +68,7 @@ export class OrganiserNotifier {
 
   public updateTaxonomy(taxonomy: Taxonomy): void {
     this.taxonomy = taxonomy;
+    this.statusTagService.updateTaxonomy(taxonomy);
   }
 
   public init(): void {
@@ -71,10 +100,16 @@ export class OrganiserNotifier {
       clearTimeout(timeout);
     }
     this.settleTimeouts.clear();
+    this.pendingStatusItems.clear();
   }
 
   public updateOptions(options: Partial<NotifierOptions>): void {
     this.options = { ...this.options, ...options };
+    this.statusTagService.updateOptions({
+      statusTagEnabled: this.options.statusTagEnabled,
+      statusTagName: this.options.statusTagName,
+      writeEnabled: this.options.writeEnabled,
+    });
   }
 
   private async handleNotification(
@@ -87,11 +122,47 @@ export class OrganiserNotifier {
       for (const id of ids) {
         const item = Zotero.Items.get(Number(id));
         if (item && item.isRegularItem() && !item.isFeedItem) {
+          if (event === 'add') {
+            this.pendingStatusItems.add(item.key);
+          }
           this.scheduleProcess(item);
         }
       }
-    } else if (type === 'item-tag' && event === 'delete') {
+    } else if (type === 'item-tag' && (event === 'remove' || event === 'delete')) {
       await this.handleTagDeleted(ids, extraData);
+    }
+  }
+
+  /**
+   * Re-read the item after the settle delay so tags added with the import are visible.
+   * Falls back to the object captured when the notification arrived.
+   */
+  private liveItem(item: Zotero.Item): Zotero.Item {
+    const id = (item as { id?: number }).id;
+    if (id == null || typeof Zotero === 'undefined' || !Zotero.Items?.get) {
+      return item;
+    }
+    try {
+      const fresh = Zotero.Items.get(Number(id));
+      if (fresh && typeof fresh.isRegularItem === 'function' && fresh.isRegularItem() && !fresh.isFeedItem) {
+        return fresh;
+      }
+    } catch (err) {
+      // The captured item is still the best copy we have.
+    }
+    return item;
+  }
+
+  private async applyStatusTag(item: Zotero.Item): Promise<void> {
+    try {
+      const result = await this.statusTagService.applyToItem(item);
+      if (result !== 'applied' && typeof Zotero !== 'undefined' && Zotero.log) {
+        Zotero.log(`[zotero-organiser] status tag for ${item.key}: ${result}`);
+      }
+    } catch (err: any) {
+      if (typeof Zotero !== 'undefined' && Zotero.log) {
+        Zotero.log(`[zotero-organiser] failed to apply status tag to ${item.key}: ${err}`);
+      }
     }
   }
 
@@ -101,10 +172,15 @@ export class OrganiserNotifier {
       clearTimeout(this.settleTimeouts.get(key));
     }
 
-    const timeout = window.setTimeout(async () => {
+    const timeout = defer(async () => {
       this.settleTimeouts.delete(key);
+      const applyStatus = this.pendingStatusItems.delete(key);
       try {
-        await this.processItem(item);
+        const live = this.liveItem(item);
+        if (applyStatus) {
+          await this.applyStatusTag(live);
+        }
+        await this.processItem(live);
       } catch (err: any) {
         if (typeof Zotero !== 'undefined' && Zotero.log) {
           Zotero.log(`[zotero-organiser] failed to process item ${key}: ${err}`);
@@ -206,12 +282,17 @@ export class OrganiserNotifier {
     ids: (string | number)[],
     extraData: Record<string, any>
   ): Promise<void> {
-    for (const itemID of ids) {
-      const item = Zotero.Items.get(Number(itemID));
+    for (const rawID of ids) {
+      // Zotero sends item-tag ids as "itemID-tagID". parseInt stops at the hyphen.
+      const itemID = parseInt(String(rawID), 10);
+      if (!Number.isFinite(itemID)) continue;
+      const item = Zotero.Items.get(itemID);
       if (!item || !item.isRegularItem()) continue;
 
       const stored = await this.stateStore.getItem(item.key);
       if (!stored) continue;
+
+      await this.statusTagService.handleStatusTagRemoved(item, stored);
 
       const currentTags = new Set(item.getTags().map((t: any) => t.tag));
       let stateChanged = false;

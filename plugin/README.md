@@ -8,12 +8,12 @@ A native Zotero 10+ extension providing conservative, taxonomy-based automatic t
 ## Features
 
 - **Reactive Event System**: Listens directly to item additions and modifications via `Zotero.Notifier` in real-time.
+- **Status Tag on Import**: After a new item settles, adds one status tag from the active taxonomy (default `status/to-read`). Turn it off with **Automatically tag new items** under Zotero Settings → Organiser → Settings. Skips items that already carry a `status/*` tag. A removed status tag is not re-applied.
 - **Safety & Durability**:
   - Human tags are preserved.
   - Deleting an organiser-owned tag permanently suppresses it.
-  - `status/*` and `priority/*` namespaces remain strictly human-owned.
-  - Atomic tag mutation via `item.saveTx()`.
-  - Automatic pre-write JSON snapshots saved before any changes.
+  - `status/*` and `priority/*` stay human-owned, except the single import status tag above. The classifier still never emits them.
+  - Tag changes are saved with `item.saveTx()`.
 - **25 Domain Taxonomy Profiles**: Built-in coverage of all 25 Australian Fields of Research (FoR) categories with multi-domain profile combiner.
 - **Taxonomy Validation & GUI Manager**: Full in-app visual Taxonomy Manager with live Zod YAML validation, bounded editor, dirty state tracking, and drag-and-drop import/export.
 - **Tier-1 Preference Memory**: Bounded personal cosine residual learning with SQLite exemplar persistence.

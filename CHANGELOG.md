@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Keep the item pane tag icon inside its 16px header box and 20px sidenav button. The previous 24px icon was centered and clipped.
+- Show the automatic status-tag switch on the Settings tab. The tab bar was still a 3-column grid, so Settings wrapped onto a second row.
+- Record a removed status tag as suppressed. Zotero reports that change as `remove` on `item-tag` with an `itemID-tagID` id, which the handler was not reading.
+
+### Added
+
+- **Plugin: automatic status tag on import**: after a new item settles, the plugin can add one taxonomy `status/*` tag (default `status/to-read`) when writes are enabled. Items that already have a `status/*` tag are left alone. Removing the applied tag suppresses it. The Settings tab chooses the tag from the active taxonomy.
+
 ## [1.0.1] - 2026-09-09
 
 ### Fixed

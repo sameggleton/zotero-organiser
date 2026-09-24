@@ -22,6 +22,7 @@ export interface ItemRecord {
   suppressedTags: Set<string>;
   triageTags: Record<string, number>;
   candidateTags: Record<string, number>;
+  statusTag?: string | null;
   lastError?: string;
   retryCount: number;
 }
@@ -108,7 +109,8 @@ export class StateStore {
           triage_tags_json TEXT NOT NULL DEFAULT '{}',
           all_candidates_json TEXT NOT NULL DEFAULT '{}',
           last_error TEXT,
-          retry_count INTEGER NOT NULL DEFAULT 0
+          retry_count INTEGER NOT NULL DEFAULT 0,
+          status_tag TEXT
         )
       `);
 
@@ -118,6 +120,9 @@ export class StateStore {
       } catch (e) {}
       try {
         await this.query('ALTER TABLE items ADD COLUMN all_candidates_json TEXT NOT NULL DEFAULT "{}"');
+      } catch (e) {}
+      try {
+        await this.query('ALTER TABLE items ADD COLUMN status_tag TEXT');
       } catch (e) {}
 
       await this.query(`
@@ -368,6 +373,7 @@ export class StateStore {
         suppressedTags: new Set<string>(JSON.parse(getVal('suppressed_tags_json') || '[]')),
         triageTags: triage,
         candidateTags: candidates,
+        statusTag: getVal('status_tag') || null,
         lastError: getVal('last_error'),
         retryCount: getVal('retry_count') || 0,
       };
@@ -378,12 +384,15 @@ export class StateStore {
 
   async saveItem(item: ItemRecord): Promise<void> {
     if (!this.db) {
+      const previous = this.memoryItems.get(item.itemKey);
       this.memoryItems.set(item.itemKey, {
         ...item,
         autoTags: new Set(item.autoTags),
         suppressedTags: new Set(item.suppressedTags),
         triageTags: { ...item.triageTags },
         candidateTags: { ...item.candidateTags },
+        statusTag:
+          item.statusTag !== undefined ? item.statusTag : (previous?.statusTag ?? null),
       });
       return;
     }
@@ -393,9 +402,9 @@ export class StateStore {
         INSERT INTO items (
           item_key, zotero_version, state, discovered_at, ready_at, classified_at,
           taxonomy_version, classifier_version, input_hash, auto_tags_json,
-          suppressed_tags_json, triage_tags_json, all_candidates_json, last_error, retry_count
+          suppressed_tags_json, triage_tags_json, all_candidates_json, last_error, retry_count, status_tag
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ON CONFLICT(item_key) DO UPDATE SET
           zotero_version = excluded.zotero_version,
           state = excluded.state,
@@ -410,7 +419,8 @@ export class StateStore {
           triage_tags_json = excluded.triage_tags_json,
           all_candidates_json = excluded.all_candidates_json,
           last_error = excluded.last_error,
-          retry_count = excluded.retry_count
+          retry_count = excluded.retry_count,
+          status_tag = CASE WHEN ? THEN excluded.status_tag ELSE items.status_tag END
         `,
         [
           item.itemKey,
@@ -428,6 +438,8 @@ export class StateStore {
           JSON.stringify(item.candidateTags || {}),
           item.lastError || null,
           item.retryCount,
+          item.statusTag ?? null,
+          item.statusTag !== undefined ? 1 : 0,
         ]
       );
     } catch (e) {
