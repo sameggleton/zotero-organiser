@@ -24,8 +24,8 @@ Available as:
 - **Conservative Guarantees**:
   - **Human tags preserved**: Never deletes or alters manually added tags.
   - **Durable suppression**: Deleting an organiser-added tag suppresses it permanently for that item.
-  - **Human-only workflows**: `status/*` and `priority/*` tags are never touched by AI.
-  - **Atomic writes**: Uses transactional mutations (`item.saveTx()`) with pre-write JSON snapshots.
+  - **Human-only workflows**: The classifier never emits `status/*` or `priority/*` tags. While writes are enabled, a new item can receive one taxonomy status tag, default `status/to-read`, after the item settles. `priority/*` is left untouched.
+  - **Atomic writes**: The plugin saves tag changes with `item.saveTx()`. The background daemon writes a pre-write JSON snapshot before it changes the library.
 
 ---
 

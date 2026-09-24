@@ -11,6 +11,63 @@ describe('StateStore (Tier 1 Exemplar Persistence & Preference Memory)', () => {
     store = new StateStore(prefMem);
   });
 
+  it('round-trips statusTag through the sqlite item row', async () => {
+    const rows = new Map<string, Record<string, unknown>>();
+    const sqlStore = new StateStore();
+    sqlStore.setDb({
+      execute: async (sql: string, params: unknown[] = []) => {
+        if (sql.includes('INSERT INTO items')) {
+          expect(sql).toContain('status_tag');
+          rows.set(String(params[0]), {
+            item_key: params[0],
+            zotero_version: params[1],
+            state: params[2],
+            discovered_at: params[3],
+            ready_at: params[4],
+            classified_at: params[5],
+            taxonomy_version: params[6],
+            classifier_version: params[7],
+            input_hash: params[8],
+            auto_tags_json: params[9],
+            suppressed_tags_json: params[10],
+            triage_tags_json: params[11],
+            all_candidates_json: params[12],
+            last_error: params[13],
+            retry_count: params[14],
+            status_tag: params[15],
+          });
+          return [];
+        }
+        if (sql.includes('FROM items WHERE item_key')) {
+          const row = rows.get(String(params[0]));
+          return row ? [row] : [];
+        }
+        return [];
+      },
+    });
+
+    const record: ItemRecord = {
+      itemKey: 'ITEM1',
+      zoteroVersion: 3,
+      state: 'discovered',
+      autoTags: new Set<string>(),
+      suppressedTags: new Set<string>(['status/reading']),
+      triageTags: {},
+      candidateTags: {},
+      statusTag: 'status/to-read',
+      retryCount: 0,
+    };
+    await sqlStore.saveItem(record);
+
+    const loaded = await sqlStore.getItem('ITEM1');
+    expect(loaded?.statusTag).toBe('status/to-read');
+    expect(loaded?.suppressedTags.has('status/reading')).toBe(true);
+
+    loaded!.statusTag = null;
+    await sqlStore.saveItem(loaded!);
+    expect((await sqlStore.getItem('ITEM1'))?.statusTag).toBeNull();
+  });
+
   it('saves and loads exemplars in memory mode', async () => {
     const vector = [0.1, 0.2, 0.3];
     await store.saveExemplar('ITEM1', 'topic/neural-nets', 'positive', vector);

@@ -1,6 +1,7 @@
 import { DEFAULT_TAXONOMY_YAML } from '../defaultTaxonomy.js';
 import { combineTaxonomyProfiles, DOMAIN_PROFILES, DomainProfile } from '../profiles/domainProfiles.js';
-import { validateTaxonomyYaml, ValidationResult } from '../core/taxonomy.js';
+import { parseTaxonomy, validateTaxonomyYaml, ValidationResult } from '../core/taxonomy.js';
+import { DEFAULT_STATUS_TAG, resolveStatusTag, statusTagsFromTaxonomy } from '../events/statusTag.js';
 import { ZoteroOrganiser } from '../index.js';
 
 export class TaxonomyManagerUI {
@@ -124,7 +125,7 @@ export class TaxonomyManagerUI {
     container.innerHTML = '';
     container.className = 'zo-root';
 
-    let activeTab: 'profiles' | 'editor' | 'import-export' = 'profiles';
+    let activeTab: 'profiles' | 'editor' | 'import-export' | 'settings' = 'profiles';
     let currentSavedYaml = this.getActiveTaxonomyYaml();
 
     // Initialise draft buffer if empty
@@ -178,15 +179,16 @@ export class TaxonomyManagerUI {
 
     container.appendChild(header);
 
-    // --- 2. Compact 3-Column Tab Bar ---
+    // --- 2. Tab bar ---
     const navBar = doc.createElement('div');
     navBar.className = 'zo-tab-bar';
     navBar.setAttribute('role', 'tablist');
 
-    const tabs: Array<{ id: 'profiles' | 'editor' | 'import-export'; label: string }> = [
+    const tabs: Array<{ id: 'profiles' | 'editor' | 'import-export' | 'settings'; label: string }> = [
       { id: 'profiles', label: 'Profiles' },
       { id: 'editor', label: 'YAML Editor' },
       { id: 'import-export', label: 'Import & Export' },
+      { id: 'settings', label: 'Settings' },
     ];
 
     const tabButtons: Record<string, HTMLButtonElement> = {};
@@ -200,7 +202,7 @@ export class TaxonomyManagerUI {
     contentArea.style.backgroundColor = 'var(--zo-bg, #ffffff)';
     contentArea.style.boxSizing = 'border-box';
 
-    const switchTab = (tabId: 'profiles' | 'editor' | 'import-export') => {
+    const switchTab = (tabId: 'profiles' | 'editor' | 'import-export' | 'settings') => {
       activeTab = tabId;
       for (const [id, btn] of Object.entries(tabButtons)) {
         const isActive = id === tabId;
@@ -245,6 +247,8 @@ export class TaxonomyManagerUI {
             switchTab('editor');
           }
         );
+      } else if (tabId === 'settings') {
+        this.renderTabSettings(contentArea, doc);
       }
     };
 
@@ -295,6 +299,153 @@ export class TaxonomyManagerUI {
       element.style.color = 'var(--zo-error-text, #b91c1c)';
       element.style.backgroundColor = 'var(--zo-error-bg, #fef2f2)';
     }
+  }
+
+  private static allowedStatusTags(): string[] {
+    try {
+      return statusTagsFromTaxonomy(parseTaxonomy(this.getActiveTaxonomyYaml()));
+    } catch (e) {
+      return [];
+    }
+  }
+
+  /**
+   * Tab 4: Settings (status tag behaviour and other plugin options)
+   */
+  private static renderTabSettings(container: HTMLElement, doc: Document): void {
+    const panel = doc.createElement('div');
+    panel.id = 'zo-panel-settings';
+    panel.setAttribute('role', 'tabpanel');
+    panel.setAttribute('aria-labelledby', 'zo-tab-settings');
+    panel.style.display = 'flex';
+    panel.style.flexDirection = 'column';
+    panel.style.height = '100%';
+    panel.style.width = '100%';
+    panel.style.boxSizing = 'border-box';
+    panel.style.overflowY = 'auto';
+    panel.style.padding = '16px';
+    panel.style.gap = '16px';
+
+    const PREF_ENABLED = 'extensions.zotero-organiser.statusTagEnabled';
+    const PREF_NAME = 'extensions.zotero-organiser.statusTagName';
+
+    const readPref = (name: string, fallback: any): any => {
+      try {
+        if (typeof Zotero !== 'undefined' && Zotero.Prefs) {
+          const v = Zotero.Prefs.get(name);
+          return v !== undefined && v !== null ? v : fallback;
+        }
+      } catch (e) {}
+      return fallback;
+    };
+
+    const writePref = (name: string, value: any): void => {
+      try {
+        if (typeof Zotero !== 'undefined' && Zotero.Prefs) {
+          Zotero.Prefs.set(name, value);
+        }
+      } catch (e) {}
+      try {
+        const instance = ZoteroOrganiser.instance;
+        instance.notifier.updateOptions({
+          statusTagEnabled: !!readPref(PREF_ENABLED, true),
+          statusTagName: String(readPref(PREF_NAME, DEFAULT_STATUS_TAG) || DEFAULT_STATUS_TAG),
+        });
+      } catch (e) {}
+    };
+
+    const allowed = this.allowedStatusTags();
+    const storedName = String(readPref(PREF_NAME, DEFAULT_STATUS_TAG) || '');
+    const selected = resolveStatusTag(storedName, allowed);
+    if (selected && selected !== storedName.trim()) {
+      writePref(PREF_NAME, selected);
+    }
+
+    const section = doc.createElement('div');
+    section.style.display = 'flex';
+    section.style.flexDirection = 'column';
+    section.style.gap = '10px';
+    section.style.padding = '12px';
+    section.style.border = '1px solid var(--zo-border, #e2e8f0)';
+    section.style.borderRadius = '8px';
+    section.style.backgroundColor = 'var(--zo-surface, #f8fafc)';
+
+    const heading = doc.createElement('div');
+    heading.textContent = 'Status tags on import';
+    heading.style.fontSize = '12.5px';
+    heading.style.fontWeight = '600';
+    heading.style.color = 'var(--zo-text-primary, #0f172a)';
+    section.appendChild(heading);
+
+    const description = doc.createElement('div');
+    description.id = 'zo-status-tag-description';
+    description.textContent = allowed.length
+      ? 'After a new item settles, add one status tag from the active taxonomy. Items that already have a status tag are left alone.'
+      : 'This taxonomy has no status tags, so new items are not tagged on import.';
+    description.style.fontSize = '11.5px';
+    description.style.color = 'var(--zo-text-secondary, #475569)';
+    section.appendChild(description);
+
+    const enabledRow = doc.createElement('label');
+    enabledRow.style.display = 'flex';
+    enabledRow.style.alignItems = 'center';
+    enabledRow.style.gap = '8px';
+    enabledRow.style.cursor = 'pointer';
+
+    const enabledChk = doc.createElement('input') as HTMLInputElement;
+    enabledChk.id = 'zo-status-tag-enabled';
+    enabledChk.type = 'checkbox';
+    enabledChk.checked = !!readPref(PREF_ENABLED, true);
+    enabledChk.disabled = allowed.length === 0;
+    enabledRow.appendChild(enabledChk);
+
+    const enabledLabel = doc.createElement('span');
+    enabledLabel.textContent = 'Tag new items with a status tag';
+    enabledLabel.style.fontSize = '12px';
+    enabledRow.appendChild(enabledLabel);
+    section.appendChild(enabledRow);
+
+    const nameRow = doc.createElement('label');
+    nameRow.style.display = 'flex';
+    nameRow.style.alignItems = 'center';
+    nameRow.style.gap = '8px';
+
+    const nameLabel = doc.createElement('span');
+    nameLabel.textContent = 'Status tag:';
+    nameLabel.style.fontSize = '12px';
+    nameRow.appendChild(nameLabel);
+
+    const nameSelect = doc.createElement('select') as HTMLSelectElement;
+    nameSelect.id = 'zo-status-tag-name';
+    nameSelect.disabled = !enabledChk.checked || allowed.length === 0;
+    nameSelect.style.flex = '1';
+    nameSelect.style.padding = '4px 8px';
+    nameSelect.style.fontSize = '12px';
+    nameSelect.style.border = '1px solid var(--zo-border, #e2e8f0)';
+    nameSelect.style.borderRadius = '4px';
+    for (const tag of allowed) {
+      const option = doc.createElement('option');
+      option.value = tag;
+      option.textContent = tag;
+      if (tag === selected) option.setAttribute('selected', 'selected');
+      nameSelect.appendChild(option);
+    }
+    if (selected) nameSelect.value = selected;
+    nameSelect.onchange = () => {
+      if (allowed.includes(nameSelect.value)) {
+        writePref(PREF_NAME, nameSelect.value);
+      }
+    };
+    nameRow.appendChild(nameSelect);
+    section.appendChild(nameRow);
+
+    enabledChk.onchange = () => {
+      writePref(PREF_ENABLED, enabledChk.checked);
+      nameSelect.disabled = !enabledChk.checked || allowed.length === 0;
+    };
+
+    panel.appendChild(section);
+    container.appendChild(panel);
   }
 
   /**

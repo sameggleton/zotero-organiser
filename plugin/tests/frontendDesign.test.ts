@@ -3,6 +3,7 @@ import { TaxonomyManagerUI } from '../src/ui/taxonomyManager.js';
 import { DEFAULT_TAXONOMY_YAML } from '../src/defaultTaxonomy.js';
 import { DOMAIN_PROFILES } from '../src/profiles/domainProfiles.js';
 import { validateTaxonomyYaml } from '../src/core/taxonomy.js';
+import { ZoteroOrganiser } from '../src/index.js';
 
 // Comprehensive DOM Mock for UI testing
 class MockElement {
@@ -233,6 +234,7 @@ describe('Frontend Design & Boundary Condition Tests for TaxonomyManagerUI', () 
   });
 
   afterEach(() => {
+    (ZoteroOrganiser as any)._instance = null;
     vi.unstubAllGlobals();
     vi.restoreAllMocks();
   });
@@ -247,7 +249,7 @@ describe('Frontend Design & Boundary Condition Tests for TaxonomyManagerUI', () 
       expect(statusPill?.className).toContain('zo-status-pill');
     });
 
-    it('renders 3-column tab bar with ARIA tab roles', () => {
+    it('renders 4-column tab bar with ARIA tab roles', () => {
       TaxonomyManagerUI.render(container as any, mockDoc as any, false);
 
       const tablist = container.querySelectorAll('.zo-tab-bar')[0];
@@ -255,10 +257,10 @@ describe('Frontend Design & Boundary Condition Tests for TaxonomyManagerUI', () 
       expect(tablist.getAttribute('role')).toBe('tablist');
 
       const tabs = container.querySelectorAll('button').filter((b) => b.getAttribute('role') === 'tab');
-      expect(tabs.length).toBe(3);
+      expect(tabs.length).toBe(4);
 
       const tabLabels = tabs.map((t) => t.textContent);
-      expect(tabLabels).toEqual(['Profiles', 'YAML Editor', 'Import & Export']);
+      expect(tabLabels).toEqual(['Profiles', 'YAML Editor', 'Import & Export', 'Settings']);
     });
 
     it('supports arrow key traversal across tabs', () => {
@@ -274,6 +276,59 @@ describe('Frontend Design & Boundary Condition Tests for TaxonomyManagerUI', () 
       // Active tab should now be YAML Editor
       const activeTab = tabs.find((t) => t.classList.contains('active'));
       expect(activeTab?.textContent).toBe('YAML Editor');
+    });
+
+    it('settings tab offers taxonomy status tags and writes the chosen pref', () => {
+      const prefs = new Map<string, unknown>([
+        ['extensions.zotero-organiser.statusTagEnabled', true],
+        ['extensions.zotero-organiser.statusTagName', 'priority/high'],
+      ]);
+      const updateOptions = vi.fn();
+      (ZoteroOrganiser as any)._instance = {
+        notifier: { updateOptions },
+        getTaxonomyYaml: () => DEFAULT_TAXONOMY_YAML,
+      };
+      vi.stubGlobal('Zotero', {
+        Prefs: {
+          get: (name: string) => prefs.get(name),
+          set: (name: string, value: unknown) => {
+            prefs.set(name, value);
+          },
+        },
+      });
+
+      TaxonomyManagerUI.render(container as any, mockDoc as any, false);
+      container.querySelector('[id="zo-tab-settings"]')!.click();
+
+      const select = mockDoc.getElementById('zo-status-tag-name')!;
+      const checkbox = mockDoc.getElementById('zo-status-tag-enabled')!;
+      const optionValues = select.querySelectorAll('option').map((option) => option.value);
+
+      expect(select.value).toBe('status/to-read');
+      expect(optionValues).toContain('status/reading');
+      expect(optionValues).not.toContain('priority/high');
+      expect(prefs.get('extensions.zotero-organiser.statusTagName')).toBe('status/to-read');
+      expect(updateOptions).toHaveBeenCalledWith({
+        statusTagEnabled: true,
+        statusTagName: 'status/to-read',
+      });
+
+      select.value = 'status/reading';
+      select.dispatchEvent({ type: 'change' });
+      expect(prefs.get('extensions.zotero-organiser.statusTagName')).toBe('status/reading');
+      expect(updateOptions).toHaveBeenLastCalledWith({
+        statusTagEnabled: true,
+        statusTagName: 'status/reading',
+      });
+
+      checkbox.checked = false;
+      checkbox.dispatchEvent({ type: 'change' });
+      expect(prefs.get('extensions.zotero-organiser.statusTagEnabled')).toBe(false);
+      expect(select.disabled).toBe(true);
+      expect(updateOptions).toHaveBeenLastCalledWith({
+        statusTagEnabled: false,
+        statusTagName: 'status/reading',
+      });
     });
   });
 

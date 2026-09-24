@@ -4,6 +4,7 @@ import { reconcile } from '../core/reconcile.js';
 import { ItemRecord, StateStore } from '../core/state.js';
 import { ClassifierEngine } from '../classifier/engine.js';
 import { Taxonomy } from '../core/taxonomy.js';
+import { StatusTagService } from './statusTag.js';
 
 export interface NotifierOptions {
   writeEnabled: boolean;
@@ -12,6 +13,8 @@ export interface NotifierOptions {
   autoThreshold: number;
   triageThreshold: number;
   settleMs: number;
+  statusTagEnabled: boolean;
+  statusTagName: string;
 }
 
 export class OrganiserNotifier {
@@ -20,7 +23,9 @@ export class OrganiserNotifier {
   private classifier: ClassifierEngine;
   private taxonomy: Taxonomy;
   private options: NotifierOptions;
+  private statusTagService: StatusTagService;
   private settleTimeouts = new Map<string, number>();
+  private pendingStatusItems = new Set<string>();
 
   constructor(
     stateStore: StateStore,
@@ -32,6 +37,15 @@ export class OrganiserNotifier {
     this.classifier = classifier;
     this.taxonomy = taxonomy;
     this.options = options;
+    this.statusTagService = new StatusTagService(
+      stateStore,
+      {
+        statusTagEnabled: options.statusTagEnabled,
+        statusTagName: options.statusTagName,
+        writeEnabled: options.writeEnabled,
+      },
+      taxonomy
+    );
   }
 
   public getTaxonomy(): Taxonomy {
@@ -40,6 +54,7 @@ export class OrganiserNotifier {
 
   public updateTaxonomy(taxonomy: Taxonomy): void {
     this.taxonomy = taxonomy;
+    this.statusTagService.updateTaxonomy(taxonomy);
   }
 
   public init(): void {
@@ -71,10 +86,16 @@ export class OrganiserNotifier {
       clearTimeout(timeout);
     }
     this.settleTimeouts.clear();
+    this.pendingStatusItems.clear();
   }
 
   public updateOptions(options: Partial<NotifierOptions>): void {
     this.options = { ...this.options, ...options };
+    this.statusTagService.updateOptions({
+      statusTagEnabled: this.options.statusTagEnabled,
+      statusTagName: this.options.statusTagName,
+      writeEnabled: this.options.writeEnabled,
+    });
   }
 
   private async handleNotification(
@@ -87,11 +108,44 @@ export class OrganiserNotifier {
       for (const id of ids) {
         const item = Zotero.Items.get(Number(id));
         if (item && item.isRegularItem() && !item.isFeedItem) {
+          if (event === 'add') {
+            this.pendingStatusItems.add(item.key);
+          }
           this.scheduleProcess(item);
         }
       }
     } else if (type === 'item-tag' && event === 'delete') {
       await this.handleTagDeleted(ids, extraData);
+    }
+  }
+
+  /**
+   * Re-read the item after the settle delay so tags added with the import are visible.
+   * Falls back to the object captured when the notification arrived.
+   */
+  private liveItem(item: Zotero.Item): Zotero.Item {
+    const id = (item as { id?: number }).id;
+    if (id == null || typeof Zotero === 'undefined' || !Zotero.Items?.get) {
+      return item;
+    }
+    try {
+      const fresh = Zotero.Items.get(Number(id));
+      if (fresh && typeof fresh.isRegularItem === 'function' && fresh.isRegularItem() && !fresh.isFeedItem) {
+        return fresh;
+      }
+    } catch (err) {
+      // The captured item is still the best copy we have.
+    }
+    return item;
+  }
+
+  private async applyStatusTag(item: Zotero.Item): Promise<void> {
+    try {
+      await this.statusTagService.applyToItem(item);
+    } catch (err: any) {
+      if (typeof Zotero !== 'undefined' && Zotero.log) {
+        Zotero.log(`[zotero-organiser] failed to apply status tag to ${item.key}: ${err}`);
+      }
     }
   }
 
@@ -103,8 +157,13 @@ export class OrganiserNotifier {
 
     const timeout = window.setTimeout(async () => {
       this.settleTimeouts.delete(key);
+      const applyStatus = this.pendingStatusItems.delete(key);
       try {
-        await this.processItem(item);
+        const live = this.liveItem(item);
+        if (applyStatus) {
+          await this.applyStatusTag(live);
+        }
+        await this.processItem(live);
       } catch (err: any) {
         if (typeof Zotero !== 'undefined' && Zotero.log) {
           Zotero.log(`[zotero-organiser] failed to process item ${key}: ${err}`);
@@ -212,6 +271,8 @@ export class OrganiserNotifier {
 
       const stored = await this.stateStore.getItem(item.key);
       if (!stored) continue;
+
+      await this.statusTagService.handleStatusTagRemoved(item, stored);
 
       const currentTags = new Set(item.getTags().map((t: any) => t.tag));
       let stateChanged = false;
