@@ -9,10 +9,13 @@ import { StatusTagService } from './statusTag.js';
 /**
  * Zotero runs bootstrap plugins in a sandbox with setTimeout and no window.
  * Prefer a window timer when one exists, and otherwise use the sandbox global.
+ * Node's types return Timeout from setTimeout; the browser returns a number.
  */
-function defer(callback: () => void, delayMs: number): number {
+type TimerHandle = ReturnType<typeof setTimeout>;
+
+function defer(callback: () => void, delayMs: number): TimerHandle {
   if (typeof window !== 'undefined' && typeof window.setTimeout === 'function') {
-    return window.setTimeout(callback, delayMs);
+    return window.setTimeout(callback, delayMs) as unknown as TimerHandle;
   }
   return setTimeout(callback, delayMs);
 }
@@ -35,7 +38,7 @@ export class OrganiserNotifier {
   private taxonomy: Taxonomy;
   private options: NotifierOptions;
   private statusTagService: StatusTagService;
-  private settleTimeouts = new Map<string, number>();
+  private settleTimeouts = new Map<string, TimerHandle>();
   private pendingStatusItems = new Set<string>();
 
   constructor(
