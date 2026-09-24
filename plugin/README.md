@@ -8,7 +8,7 @@ A native Zotero 10+ extension providing conservative, taxonomy-based automatic t
 ## Features
 
 - **Reactive Event System**: Listens directly to item additions and modifications via `Zotero.Notifier` in real-time.
-- **Status Tag on Import**: After a new item settles, adds one status tag from the active taxonomy (default `status/to-read`). Skips items that already carry a `status/*` tag. A removed status tag is not re-applied. Set `extensions.zotero-organiser.writeEnabled` to false to stop the write.
+- **Status Tag on Import**: After a new item settles, adds one status tag from the active taxonomy (default `status/to-read`). Turn it off with **Automatically tag new items** under Zotero Settings → Organiser → Settings. Skips items that already carry a `status/*` tag. A removed status tag is not re-applied.
 - **Safety & Durability**:
   - Human tags are preserved.
   - Deleting an organiser-owned tag permanently suppresses it.

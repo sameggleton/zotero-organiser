@@ -25,7 +25,7 @@ declare namespace Zotero {
   }
 
   namespace Notifier {
-    type EventType = 'add' | 'modify' | 'delete' | 'move' | 'trash' | 'refresh';
+    type EventType = 'add' | 'modify' | 'delete' | 'remove' | 'move' | 'trash' | 'refresh';
     type ItemType = 'item' | 'collection' | 'search' | 'item-tag' | 'tag' | 'feedItem';
     
     interface Observer {

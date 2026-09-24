@@ -125,7 +125,7 @@ export class OrganiserNotifier {
           this.scheduleProcess(item);
         }
       }
-    } else if (type === 'item-tag' && event === 'delete') {
+    } else if (type === 'item-tag' && (event === 'remove' || event === 'delete')) {
       await this.handleTagDeleted(ids, extraData);
     }
   }
@@ -279,8 +279,11 @@ export class OrganiserNotifier {
     ids: (string | number)[],
     extraData: Record<string, any>
   ): Promise<void> {
-    for (const itemID of ids) {
-      const item = Zotero.Items.get(Number(itemID));
+    for (const rawID of ids) {
+      // Zotero sends item-tag ids as "itemID-tagID". parseInt stops at the hyphen.
+      const itemID = parseInt(String(rawID), 10);
+      if (!Number.isFinite(itemID)) continue;
+      const item = Zotero.Items.get(itemID);
       if (!item || !item.isRegularItem()) continue;
 
       const stored = await this.stateStore.getItem(item.key);

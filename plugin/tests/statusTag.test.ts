@@ -405,7 +405,9 @@ describe('OrganiserNotifier status tag wiring', () => {
     expect(notifierItem.addedTags).toEqual(['status/to-read']);
 
     notifierItem.getTags = () => [];
-    await (notifier as any).handleNotification('delete', 'item-tag', [1], {});
+    await (notifier as any).handleNotification('remove', 'item-tag', ['1-99'], {
+      '1-99': { tag: 'status/to-read', type: 0 },
+    });
 
     const stored = await stateStore.getItem(notifierItem.key);
     expect(stored?.statusTag).toBeNull();

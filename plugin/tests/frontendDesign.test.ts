@@ -302,6 +302,9 @@ describe('Frontend Design & Boundary Condition Tests for TaxonomyManagerUI', () 
 
       const select = mockDoc.getElementById('zo-status-tag-name')!;
       const checkbox = mockDoc.getElementById('zo-status-tag-enabled')!;
+      expect(mockDoc.getElementById('zo-status-tag-enabled-label')?.textContent).toBe(
+        'Automatically tag new items'
+      );
       const optionValues = select.querySelectorAll('option').map((option) => option.value);
 
       expect(select.value).toBe('status/to-read');

@@ -206,7 +206,7 @@
 /* Tab Bar */
 .zo-tab-bar {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 2px;
   padding: 4px 8px;
   background-color: var(--zo-surface-alt);
@@ -226,6 +226,8 @@
   color: var(--zo-text-secondary);
   cursor: pointer;
   text-align: center;
+  line-height: 1.2;
+  white-space: normal;
   transition: all 0.12s ease;
   box-sizing: border-box;
 }

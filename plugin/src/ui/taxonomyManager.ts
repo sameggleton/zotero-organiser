@@ -371,7 +371,7 @@ export class TaxonomyManagerUI {
     section.style.backgroundColor = 'var(--zo-surface, #f8fafc)';
 
     const heading = doc.createElement('div');
-    heading.textContent = 'Status tags on import';
+    heading.textContent = 'Automatic status tag';
     heading.style.fontSize = '12.5px';
     heading.style.fontWeight = '600';
     heading.style.color = 'var(--zo-text-primary, #0f172a)';
@@ -380,17 +380,22 @@ export class TaxonomyManagerUI {
     const description = doc.createElement('div');
     description.id = 'zo-status-tag-description';
     description.textContent = allowed.length
-      ? 'After a new item settles, add one status tag from the active taxonomy. Items that already have a status tag are left alone.'
-      : 'This taxonomy has no status tags, so new items are not tagged on import.';
+      ? 'When this is on, a new item receives one status tag after it settles. Items that already have a status tag are left alone. Turning it off stops new automatic status tags. Tags already on items stay where they are.'
+      : 'This taxonomy has no status tags, so automatic status tagging stays off.';
     description.style.fontSize = '11.5px';
     description.style.color = 'var(--zo-text-secondary, #475569)';
     section.appendChild(description);
 
     const enabledRow = doc.createElement('label');
+    enabledRow.id = 'zo-status-tag-enabled-row';
     enabledRow.style.display = 'flex';
     enabledRow.style.alignItems = 'center';
     enabledRow.style.gap = '8px';
-    enabledRow.style.cursor = 'pointer';
+    enabledRow.style.cursor = allowed.length === 0 ? 'default' : 'pointer';
+    enabledRow.style.padding = '8px 10px';
+    enabledRow.style.border = '1px solid var(--zo-border, #e2e8f0)';
+    enabledRow.style.borderRadius = '6px';
+    enabledRow.style.backgroundColor = 'var(--zo-bg, #ffffff)';
 
     const enabledChk = doc.createElement('input') as HTMLInputElement;
     enabledChk.id = 'zo-status-tag-enabled';
@@ -400,8 +405,10 @@ export class TaxonomyManagerUI {
     enabledRow.appendChild(enabledChk);
 
     const enabledLabel = doc.createElement('span');
-    enabledLabel.textContent = 'Tag new items with a status tag';
+    enabledLabel.id = 'zo-status-tag-enabled-label';
+    enabledLabel.textContent = 'Automatically tag new items';
     enabledLabel.style.fontSize = '12px';
+    enabledLabel.style.fontWeight = '600';
     enabledRow.appendChild(enabledLabel);
     section.appendChild(enabledRow);
 

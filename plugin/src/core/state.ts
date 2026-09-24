@@ -384,13 +384,15 @@ export class StateStore {
 
   async saveItem(item: ItemRecord): Promise<void> {
     if (!this.db) {
+      const previous = this.memoryItems.get(item.itemKey);
       this.memoryItems.set(item.itemKey, {
         ...item,
         autoTags: new Set(item.autoTags),
         suppressedTags: new Set(item.suppressedTags),
         triageTags: { ...item.triageTags },
         candidateTags: { ...item.candidateTags },
-        statusTag: item.statusTag ?? null,
+        statusTag:
+          item.statusTag !== undefined ? item.statusTag : (previous?.statusTag ?? null),
       });
       return;
     }
@@ -418,7 +420,7 @@ export class StateStore {
           all_candidates_json = excluded.all_candidates_json,
           last_error = excluded.last_error,
           retry_count = excluded.retry_count,
-          status_tag = excluded.status_tag
+          status_tag = CASE WHEN ? THEN excluded.status_tag ELSE items.status_tag END
         `,
         [
           item.itemKey,
@@ -436,7 +438,8 @@ export class StateStore {
           JSON.stringify(item.candidateTags || {}),
           item.lastError || null,
           item.retryCount,
-          item.statusTag || null,
+          item.statusTag ?? null,
+          item.statusTag !== undefined ? 1 : 0,
         ]
       );
     } catch (e) {

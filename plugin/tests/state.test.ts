@@ -68,6 +68,27 @@ describe('StateStore (Tier 1 Exemplar Persistence & Preference Memory)', () => {
     expect((await sqlStore.getItem('ITEM1'))?.statusTag).toBeNull();
   });
 
+  it('keeps a stored status tag when a later save omits the field', async () => {
+    const record: ItemRecord = {
+      itemKey: 'ITEM1',
+      zoteroVersion: 1,
+      state: 'discovered',
+      autoTags: new Set<string>(),
+      suppressedTags: new Set<string>(),
+      triageTags: {},
+      candidateTags: {},
+      statusTag: 'status/to-read',
+      retryCount: 0,
+    };
+    await store.saveItem(record);
+
+    const partial = (await store.getItem('ITEM1'))!;
+    delete partial.statusTag;
+    await store.saveItem(partial);
+
+    expect((await store.getItem('ITEM1'))?.statusTag).toBe('status/to-read');
+  });
+
   it('saves and loads exemplars in memory mode', async () => {
     const vector = [0.1, 0.2, 0.3];
     await store.saveExemplar('ITEM1', 'topic/neural-nets', 'positive', vector);
