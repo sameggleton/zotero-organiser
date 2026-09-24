@@ -39,7 +39,10 @@ export class ItemPaneUI {
 
     if (this.registeredID) return;
 
-    const iconURI = rootURI ? `${rootURI}chrome/content/icons/tag-purple.svg` : '';
+    // The section header paints the icon in a 16px box. The sidenav button paints a 20px image.
+    // A larger intrinsic size is centered in that box and the overflow is clipped.
+    const headerIconURI = rootURI ? `${rootURI}chrome/content/icons/tag-purple.svg` : '';
+    const sidenavIconURI = rootURI ? `${rootURI}chrome/content/icons/tag-purple-20.svg` : '';
 
     try {
       this.registeredID = manager.registerSection({
@@ -48,12 +51,12 @@ export class ItemPaneUI {
         header: {
           l10nID: 'zotero-organiser-section-header',
           label: 'Taxonomy Organiser',
-          icon: iconURI,
+          icon: headerIconURI,
         },
         sidenav: {
           l10nID: 'zotero-organiser-section-sidenav',
           label: 'Taxonomy',
-          icon: iconURI,
+          icon: sidenavIconURI,
         },
         onRender: ({ body, item }: { body: HTMLElement; item: Zotero.Item }) => {
           if (!body || !item) return;

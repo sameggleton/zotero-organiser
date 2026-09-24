@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Keep the item pane tag icon inside its 16px header box and 20px sidenav button. The previous 24px icon was centered and clipped.
+
 ### Added
 
 - **Plugin: automatic status tag on import**: after a new item settles, the plugin can add one taxonomy `status/*` tag (default `status/to-read`) when writes are enabled. Items that already have a `status/*` tag are left alone. Removing the applied tag suppresses it. The Settings tab chooses the tag from the active taxonomy.
